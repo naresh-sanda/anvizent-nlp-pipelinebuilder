@@ -1,0 +1,3225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pipeline Builder — NLP Studio</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,400&display=swap"
+    rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      /* Light Theme Variables */
+      --bg: #F4F6FA;
+      --surface: #FFFFFF;
+      --surface2: #F8FAFC;
+      --surface3: #F1F5F9;
+      --border: #E2E8F0;
+      --border2: #CBD5E1;
+      --text: #0F172A;
+      --text2: #475569;
+      --text3: #64748B;
+
+      --bronze: #C2410C;
+      --bronze-bg: #FFF7ED;
+      --bronze-border: #FFEDD5;
+      --silver: #475569;
+      --silver-bg: #F8FAFC;
+      --silver-border: #E2E8F0;
+      --gold: #B45309;
+      --gold-bg: #FFFBEB;
+      --gold-border: #FEF3C7;
+      --platinum: #6D28D9;
+      --platinum-bg: #F5F3FF;
+      --platinum-border: #EDE9FE;
+
+      --accent: #4F46E5;
+      --accent2: #10B981;
+      --accent3: #F59E0B;
+
+      /* Sidebar Variables */
+      --sidebar-bg: #1E1E2D;
+      --sidebar-text: #A1A5B7;
+      --sidebar-hover: #2B2B40;
+      --sidebar-active: #4F46E5;
+      --sidebar-active-text: #FFFFFF;
+
+      --font-head: 'Syne', sans-serif;
+      --font-body: 'DM Sans', sans-serif;
+      --font-mono: 'DM Mono', monospace;
+
+      --r: 12px;
+      --r2: 16px;
+
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04), 0 0 0 1px rgba(0, 0, 0, 0.02);
+      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.03);
+      --shadow-lg: 0 12px 24px -4px rgba(0, 0, 0, 0.08), 0 4px 8px -2px rgba(0, 0, 0, 0.04);
+    }
+
+    html,
+    body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 14px;
+      line-height: 1.6;
+      overflow: hidden;
+    }
+
+    /* App Shell Layout */
+    .shell {
+      display: flex;
+      height: 100vh;
+      width: 100vw;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 260px;
+      background: var(--sidebar-bg);
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid rgba(255, 255, 255, 0.05);
+      position: relative;
+      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      overflow-x: hidden;
+    }
+
+    .sidebar.collapsed {
+      width: 74px;
+    }
+
+    .sidebar.collapsed .anvizent-logo-text span.tail {
+      display: none;
+    }
+    
+    .sidebar.collapsed .nav-section {
+      opacity: 0;
+      height: 0;
+      margin: 0;
+      overflow: hidden;
+    }
+
+    .sidebar.collapsed .nav-text {
+      display: none;
+    }
+
+    .sidebar.collapsed .sidebar-footer {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .sidebar.collapsed .nav-item {
+      padding: 10px;
+      justify-content: center;
+    }
+
+    .sidebar.collapsed .nav-item::before {
+      display: none;
+    }
+
+    .sidebar-logo {
+      height: 64px;
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+      gap: 10px;
+    }
+
+    .sidebar.collapsed .sidebar-logo {
+      padding: 0;
+      justify-content: center;
+    }
+
+    .anvizent-logo-text {
+      font-family: var(--font-head);
+      font-size: 24px;
+      font-weight: 800;
+      color: #FFFFFF;
+      letter-spacing: -0.5px;
+      font-style: italic;
+    }
+
+    .anvizent-logo-text span {
+      color: var(--accent);
+    }
+
+    .sidebar-menu {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .sidebar-menu::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .sidebar-menu::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+    }
+
+    .nav-section {
+      font-size: 11px;
+      font-weight: 600;
+      color: #565674;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin: 16px 0 8px 12px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      color: var(--sidebar-text);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 13.5px;
+      font-weight: 500;
+      text-decoration: none;
+    }
+
+    .nav-item:hover {
+      background: var(--sidebar-hover);
+      color: var(--sidebar-active-text);
+    }
+
+    .nav-item.active {
+      background: var(--sidebar-hover);
+      color: var(--sidebar-active-text);
+      position: relative;
+    }
+
+    .nav-item.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 8px;
+      bottom: 8px;
+      width: 3px;
+      background: var(--accent);
+      border-radius: 0 4px 4px 0;
+    }
+
+    .sidebar-footer {
+      padding: 16px 24px;
+      font-size: 11px;
+      color: #565674;
+      white-space: nowrap;
+      transition: opacity 0.2s;
+    }
+
+    /* Main Area */
+    .main-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    /* Header */
+    .app-header {
+      height: 64px;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      flex-shrink: 0;
+      box-shadow: var(--shadow-sm);
+      z-index: 10;
+    }
+
+    .header-title {
+      font-family: var(--font-head);
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.02em;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .meta-chips {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .header-chip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      font-family: var(--font-mono);
+    }
+
+    .header-chip.partner {
+      background: #EEF2FF;
+      color: #4338CA;
+      border: 1px solid #E0E7FF;
+    }
+
+    .header-chip.tenant {
+      background: #ECFDF5;
+      color: #047857;
+      border: 1px solid #D1FAE5;
+    }
+
+    .session-chip {
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .session-chip:hover {
+      background: #E0E7FF;
+      border-color: #A5B4FC;
+      color: #4338CA;
+    }
+
+    .session-chip .chip-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .session-chip.inactive {
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      color: #64748B;
+    }
+
+    .session-chip.starting {
+      background: #FFFBEB;
+      border: 1px solid #FDE68A;
+      color: #D97706;
+    }
+
+    .session-chip.starting .chip-dot {
+      background: #F59E0B;
+      animation: pulse 1.5s infinite;
+    }
+
+    .session-chip.active {
+      background: #ECFDF5;
+      border: 1px solid #A7F3D0;
+      color: #059669;
+    }
+
+    .session-chip.active .chip-dot {
+      background: #10B981;
+      box-shadow: 0 0 4px #10B981;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      border-left: 1px solid var(--border);
+      padding-left: 20px;
+    }
+
+    .icon-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text2);
+      cursor: pointer;
+      transition: all 0.2s;
+      background: transparent;
+      border: 1px solid transparent;
+    }
+
+    .icon-btn:hover {
+      background: var(--surface2);
+      color: var(--accent);
+      border-color: var(--border);
+    }
+
+    .icon-btn svg {
+      width: 18px;
+      height: 18px;
+      stroke-width: 2;
+    }
+
+    .profile-dropdown {
+      position: relative;
+    }
+
+    .profile-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      padding: 4px 10px 4px 4px;
+      border-radius: 20px;
+      transition: all 0.2s;
+      border: 1px solid transparent;
+    }
+
+    .profile-btn:hover {
+      background: var(--surface2);
+      border-color: var(--border);
+    }
+
+    .avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-family: var(--font-head);
+      font-size: 13px;
+    }
+
+    .profile-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .profile-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.2;
+    }
+
+    .profile-role {
+      font-size: 11px;
+      color: var(--text3);
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      width: 220px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      box-shadow: var(--shadow-lg);
+      padding: 8px 0;
+      display: none;
+      z-index: 100;
+    }
+
+    .profile-dropdown.open .dropdown-menu {
+      display: block;
+      animation: dropIn 0.2s ease;
+    }
+
+    @keyframes dropIn {
+      from {
+        opacity: 0;
+        transform: translateY(-8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .dropdown-item {
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .dropdown-item:hover {
+      background: var(--surface2);
+      color: var(--accent);
+    }
+
+    .dropdown-item svg {
+      width: 16px;
+      height: 16px;
+      color: var(--text3);
+    }
+
+    .dropdown-item:hover svg {
+      color: var(--accent);
+    }
+
+    .dropdown-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 6px 0;
+    }
+
+    /* Builder Grid */
+    .app {
+      display: grid;
+      grid-template-columns: 1fr 1px 480px;
+      flex: 1;
+      height: calc(100vh - 64px);
+      background: var(--bg);
+    }
+
+    .left-panel {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: var(--surface);
+      margin: 16px 0 16px 16px;
+      border-radius: var(--r) 0 0 var(--r);
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--border);
+      border-right: none;
+    }
+
+    .right-panel {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: var(--surface);
+      margin: 16px 16px 16px 0;
+      border-radius: 0 var(--r) var(--r) 0;
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--border);
+      border-left: none;
+    }
+
+    .divider {
+      background: var(--border);
+      margin: 16px 0;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      /* blend trick */
+      position: relative;
+      z-index: 5;
+    }
+
+    /* Inner Topbars */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      flex-shrink: 0;
+    }
+
+    .topbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-icon {
+      width: 30px;
+      height: 30px;
+      background: var(--accent);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .brand-icon svg {
+      width: 16px;
+      height: 16px;
+      fill: none;
+      stroke: #fff;
+      stroke-width: 2.5;
+    }
+
+    .brand-name {
+      font-family: var(--font-head);
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+
+    .brand-tag {
+      font-size: 10px;
+      font-weight: 600;
+      background: #EEF2FF;
+      color: var(--accent);
+      border: 1px solid #E0E7FF;
+      border-radius: 20px;
+      padding: 2px 8px;
+      letter-spacing: .04em;
+    }
+
+    .topbar-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .status-pill {
+      font-size: 11px;
+      background: #ECFDF5;
+      color: var(--accent2);
+      border: 1px solid #D1FAE5;
+      border-radius: 20px;
+      padding: 3px 10px;
+      letter-spacing: .04em;
+      font-weight: 500;
+    }
+
+    .chat-area {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      background: var(--surface);
+    }
+
+    .chat-area::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .chat-area::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .chat-area::-webkit-scrollbar-thumb {
+      background: var(--border2);
+      border-radius: 4px;
+    }
+
+    .msg {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      animation: fadeUp .3s ease;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .msg-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 600;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .msg-avatar.ai {
+      background: #EEF2FF;
+      color: var(--accent);
+      border: 1px solid #E0E7FF;
+      font-family: var(--font-mono);
+    }
+
+    .msg-avatar.user {
+      background: var(--surface3);
+      color: var(--text2);
+      border: 1px solid var(--border2);
+    }
+
+    .msg-body {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .msg-sender {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text3);
+      margin-bottom: 4px;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+    }
+
+    .msg-text {
+      font-size: 13.5px;
+      line-height: 1.65;
+      color: var(--text2);
+    }
+
+    .msg-text b {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .msg.ai .msg-body {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 4px 12px 12px 12px;
+      padding: 12px 14px;
+    }
+
+    .msg.user .msg-body {
+      background: #EEF2FF;
+      border: 1px solid #E0E7FF;
+      border-radius: 12px 4px 12px 12px;
+      padding: 12px 14px;
+    }
+
+    .msg.user .msg-sender {
+      color: #4338CA;
+    }
+
+    .msg.user .msg-text {
+      color: var(--text);
+    }
+
+    .tier-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .tier-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 20px;
+      cursor: pointer;
+      border: 1px solid;
+      transition: all .15s;
+      font-family: var(--font-mono);
+      background: var(--surface);
+      color: var(--text3);
+      border-color: var(--border);
+    }
+
+    .tier-chip.bronze {
+      background: var(--bronze-bg);
+      border-color: var(--bronze-border);
+      color: var(--bronze);
+    }
+
+    .tier-chip.silver {
+      background: var(--silver-bg);
+      border-color: var(--silver-border);
+      color: var(--silver);
+    }
+
+    .tier-chip.gold {
+      background: var(--gold-bg);
+      border-color: var(--gold-border);
+      color: var(--gold);
+    }
+
+    .tier-chip.platinum {
+      background: var(--platinum-bg);
+      border-color: var(--platinum-border);
+      color: var(--platinum);
+    }
+
+    .tier-chip.active.bronze {
+      background: var(--bronze);
+      color: white;
+      border-color: var(--bronze);
+    }
+
+    .tier-chip.active.silver {
+      background: var(--silver);
+      color: white;
+      border-color: var(--silver);
+    }
+
+    .tier-chip.active.gold {
+      background: var(--gold);
+      color: white;
+      border-color: var(--gold);
+    }
+
+    .tier-chip.active.platinum {
+      background: var(--platinum);
+      color: white;
+      border-color: var(--platinum);
+    }
+
+    .tier-chip-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+      opacity: .8;
+    }
+
+    .tier-chip.active .tier-chip-dot {
+      opacity: 1;
+      border: 1px solid rgba(255, 255, 255, 0.5);
+    }
+
+    .quick-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .qa-btn {
+      font-size: 12px;
+      padding: 6px 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      color: var(--text2);
+      cursor: pointer;
+      transition: all .15s;
+      font-family: var(--font-body);
+      font-weight: 500;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .qa-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: #EEF2FF;
+      box-shadow: none;
+    }
+
+    .input-area {
+      padding: 16px 20px;
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+      flex-shrink: 0;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+    }
+
+    .input-wrap {
+      flex: 1;
+      position: relative;
+    }
+
+    #userInput {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: var(--r2);
+      padding: 12px 16px;
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 13.5px;
+      resize: none;
+      min-height: 46px;
+      max-height: 120px;
+      outline: none;
+      transition: border-color .15s, box-shadow .15s;
+      line-height: 1.5;
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.02);
+    }
+
+    #userInput:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    }
+
+    #userInput::placeholder {
+      color: var(--text3);
+    }
+
+    .send-btn {
+      width: 42px;
+      height: 42px;
+      background: linear-gradient(180deg, var(--accent) 0%, #4338ca 100%);
+      border: 1px solid #3730A3;
+      border-radius: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all .2s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 2px 6px rgba(79, 70, 229, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    }
+
+    .send-btn:hover {
+      background: linear-gradient(180deg, #5c55e6 0%, #4f46e5 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    }
+
+    .send-btn:active {
+      transform: translateY(0);
+      box-shadow: 0 1px 2px rgba(79, 70, 229, 0.3);
+    }
+
+    .send-btn svg {
+      width: 16px;
+      height: 16px;
+      fill: none;
+      stroke: #fff;
+      stroke-width: 2.5;
+    }
+
+    .input-hint {
+      font-size: 11px;
+      color: var(--text3);
+      margin-top: 8px;
+      text-align: center;
+    }
+
+    .right-topbar {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+      background: var(--surface);
+    }
+
+    .panel-tabs {
+      display: flex;
+      gap: 2px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 3px;
+    }
+
+    .panel-tab {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 5px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      color: var(--text3);
+      border: none;
+      background: none;
+      font-family: var(--font-body);
+      transition: all .15s;
+    }
+
+    .panel-tab.active {
+      background: var(--surface);
+      color: var(--text);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .copy-btn {
+      font-size: 11px;
+      color: var(--text2);
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: 6px;
+      padding: 5px 10px;
+      cursor: pointer;
+      font-family: var(--font-mono);
+      font-weight: 600;
+      transition: all .15s;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .copy-btn:hover {
+      border-color: var(--text3);
+      color: var(--text);
+      background: var(--surface2);
+    }
+
+    .right-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0;
+      background: var(--surface);
+    }
+
+    .right-content::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .right-content::-webkit-scrollbar-thumb {
+      background: var(--border2);
+      border-radius: 4px;
+    }
+
+    .json-view {
+      padding: 18px;
+      font-family: var(--font-mono);
+      font-size: 12.5px;
+      line-height: 1.8;
+      color: var(--text2);
+      background: var(--surface);
+    }
+
+    .json-key {
+      color: #8B5CF6;
+      font-weight: 600;
+    }
+
+    .json-str {
+      color: #059669;
+    }
+
+    .json-num {
+      color: #D97706;
+    }
+
+    .json-bool {
+      color: #2563EB;
+      font-weight: 600;
+    }
+
+    .json-null {
+      color: var(--text3);
+      font-style: italic;
+    }
+
+    .json-bracket {
+      color: var(--border2);
+    }
+
+    .pipeline-view {
+      padding: 16px;
+    }
+
+    .tier-block {
+      border-radius: var(--r);
+      border: 1px solid;
+      margin-bottom: 16px;
+      overflow: hidden;
+      background: var(--surface);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .tier-block.bronze {
+      border-color: var(--bronze-border);
+    }
+
+    .tier-block.silver {
+      border-color: var(--silver-border);
+    }
+
+    .tier-block.gold {
+      border-color: var(--gold-border);
+    }
+
+    .tier-block.platinum {
+      border-color: var(--platinum-border);
+    }
+
+    .tier-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+      border-bottom: 1px solid;
+    }
+
+    .tier-block.bronze .tier-header {
+      border-color: var(--bronze-border);
+      background: var(--bronze-bg);
+    }
+
+    .tier-block.silver .tier-header {
+      border-color: var(--silver-border);
+      background: var(--silver-bg);
+    }
+
+    .tier-block.gold .tier-header {
+      border-color: var(--gold-border);
+      background: var(--gold-bg);
+    }
+
+    .tier-block.platinum .tier-header {
+      border-color: var(--platinum-border);
+      background: var(--platinum-bg);
+    }
+
+    .tier-hl {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tier-label {
+      font-family: var(--font-head);
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: .02em;
+    }
+
+    .tier-block.bronze .tier-label {
+      color: var(--bronze);
+    }
+
+    .tier-block.silver .tier-label {
+      color: var(--silver);
+    }
+
+    .tier-block.gold .tier-label {
+      color: var(--gold);
+    }
+
+    .tier-block.platinum .tier-label {
+      color: var(--platinum);
+    }
+
+    .tier-badge {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-family: var(--font-mono);
+      letter-spacing: .05em;
+    }
+
+    .tier-block.bronze .tier-badge {
+      background: rgba(194, 65, 12, .1);
+      color: var(--bronze);
+      border: 1px solid rgba(194, 65, 12, .2);
+    }
+
+    .tier-block.silver .tier-badge {
+      background: rgba(71, 85, 105, .1);
+      color: var(--silver);
+      border: 1px solid rgba(71, 85, 105, .2);
+    }
+
+    .tier-block.gold .tier-badge {
+      background: rgba(180, 83, 9, .1);
+      color: var(--gold);
+      border: 1px solid rgba(180, 83, 9, .2);
+    }
+
+    .tier-block.platinum .tier-badge {
+      background: rgba(109, 40, 217, .1);
+      color: var(--platinum);
+      border: 1px solid rgba(109, 40, 217, .2);
+    }
+
+    .tier-status {
+      font-size: 10px;
+      color: var(--text3);
+      font-family: var(--font-mono);
+      font-weight: 600;
+    }
+
+    .tier-status.ready {
+      color: var(--accent2);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .tier-status.ready::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent2);
+    }
+
+    .tier-body {
+      padding: 14px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .tier-field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .tf-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--text3);
+      font-family: var(--font-mono);
+      font-weight: 600;
+    }
+
+    .tf-value {
+      font-size: 12px;
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .tf-tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .tf-tag {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      border: 1px solid;
+      font-family: var(--font-mono);
+      font-weight: 500;
+      background: var(--surface2);
+    }
+
+    .tier-block.bronze .tf-tag {
+      border-color: var(--bronze-border);
+      color: var(--bronze);
+    }
+
+    .tier-block.silver .tf-tag {
+      border-color: var(--silver-border);
+      color: var(--silver);
+    }
+
+    .tier-block.gold .tf-tag {
+      border-color: var(--gold-border);
+      color: var(--gold);
+    }
+
+    .tier-block.platinum .tf-tag {
+      border-color: var(--platinum-border);
+      color: var(--platinum);
+    }
+
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 200px;
+      gap: 12px;
+      color: var(--text3);
+    }
+
+    .empty-state svg {
+      width: 32px;
+      height: 32px;
+      opacity: .5;
+      color: var(--text3);
+      stroke-width: 1.5;
+    }
+
+    .empty-state p {
+      font-size: 13px;
+      text-align: center;
+      color: var(--text2);
+      font-weight: 500;
+    }
+
+    .flow-view {
+      padding: 16px;
+    }
+
+    .flow-pipeline {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .flow-node {
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+    }
+
+    .flow-line {
+      width: 2px;
+      background: var(--border2);
+      margin-left: 23px;
+      height: 24px;
+    }
+
+    .flow-card {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 16px;
+      border-radius: var(--r);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      margin-left: 0;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .flow-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .flow-icon svg {
+      width: 16px;
+      height: 16px;
+      fill: none;
+      stroke-width: 2.5;
+    }
+
+    .flow-info {
+      flex: 1;
+    }
+
+    .flow-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .flow-desc {
+      font-size: 12px;
+      color: var(--text2);
+      margin-top: 2px;
+    }
+
+    .flow-arrow {
+      font-size: 12px;
+      color: var(--text3);
+      font-family: var(--font-mono);
+    }
+
+    .typing-indicator {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+      padding: 4px 0;
+    }
+
+    .typing-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--text3);
+      animation: blink 1.2s infinite;
+    }
+
+    .typing-dot:nth-child(2) {
+      animation-delay: .2s;
+    }
+
+    .typing-dot:nth-child(3) {
+      animation-delay: .4s;
+    }
+
+    @keyframes blink {
+
+      0%,
+      80%,
+      100% {
+        opacity: .3;
+      }
+
+      40% {
+        opacity: 1;
+      }
+    }
+
+    .welcome-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: 20px;
+      margin-bottom: 4px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .wc-title {
+      font-family: var(--font-head);
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 6px;
+      letter-spacing: -.01em;
+    }
+
+    .wc-sub {
+      font-size: 13px;
+      color: var(--text2);
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .wc-tiers {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    /* RAG Knowledge View (Production Ready) */
+    .rag-view {
+      flex: 1;
+      background: var(--bg);
+      overflow-y: auto;
+      display: none;
+      padding: 32px 40px;
+    }
+
+    .rag-header-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 28px;
+    }
+
+    .rag-title {
+      font-family: var(--font-head);
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.02em;
+    }
+
+    .rag-subtitle {
+      font-size: 14px;
+      color: var(--text3);
+      margin-top: 6px;
+    }
+
+    .header-stats {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .storage-stat {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      width: 140px;
+    }
+
+    .storage-text {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: var(--text3);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .storage-text span {
+      color: var(--text);
+    }
+
+    .storage-bar {
+      height: 6px;
+      background: var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .storage-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 4px;
+    }
+
+    .primary-btn {
+      background: linear-gradient(180deg, var(--accent) 0%, #4338ca 100%);
+      color: #fff;
+      border: 1px solid #3730A3;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: 13.5px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .primary-btn:hover {
+      background: linear-gradient(180deg, #5c55e6 0%, #4f46e5 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    }
+
+    .primary-btn svg {
+      width: 16px;
+      height: 16px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2.5;
+    }
+
+    .rag-content-grid {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .upload-panel {
+      background: var(--surface);
+      border: 1px dashed var(--border2);
+      border-radius: var(--r);
+      padding: 32px 20px;
+      text-align: center;
+      transition: all 0.2s;
+      cursor: pointer;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .upload-panel:hover {
+      border-color: var(--accent);
+      background: #F8FAFC;
+      box-shadow: var(--shadow-md);
+    }
+
+    .upload-icon-wrapper {
+      width: 56px;
+      height: 56px;
+      border-radius: 12px;
+      background: #EEF2FF;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(79, 70, 229, 0.15);
+    }
+
+    .upload-icon-wrapper svg {
+      width: 24px;
+      height: 24px;
+      stroke-width: 2;
+    }
+
+    .upload-text-main {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .upload-text-sub {
+      font-size: 12px;
+      color: var(--text3);
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+
+    .secondary-btn {
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      color: var(--text);
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .secondary-btn:hover {
+      background: #F1F5F9;
+      border-color: var(--text3);
+    }
+
+    .file-manager {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .fm-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--surface);
+      padding: 12px 16px;
+      border-radius: var(--r);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .fm-search {
+      position: relative;
+      width: 260px;
+    }
+
+    .fm-search svg {
+      position: absolute;
+      left: 12px;
+      top: 10px;
+      width: 16px;
+      height: 16px;
+      color: var(--text3);
+      stroke-width: 2.5;
+    }
+
+    .fm-search input {
+      width: 100%;
+      padding: 8px 12px 8px 36px;
+      border: 1px solid var(--border2);
+      border-radius: 6px;
+      font-family: var(--font-body);
+      font-size: 13px;
+      background: var(--surface2);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .fm-search input:focus {
+      border-color: var(--accent);
+      background: #fff;
+    }
+
+    .fm-filters {
+      display: flex;
+      gap: 6px;
+    }
+
+    .fm-filter-btn {
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text2);
+      background: transparent;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .fm-filter-btn:hover {
+      background: var(--surface2);
+    }
+
+    .fm-filter-btn.active {
+      background: var(--text);
+      color: #fff;
+    }
+
+    .file-table-card {
+      background: var(--surface);
+      border-radius: var(--r);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+    }
+
+    .file-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    .file-table th {
+      padding: 14px 20px;
+      font-size: 11px;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--text3);
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface2);
+    }
+
+    .file-table td {
+      padding: 14px 20px;
+      font-size: 13px;
+      color: var(--text2);
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    .file-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .file-table tr:hover td {
+      background: #F8FAFC;
+    }
+
+    .ft-checkbox {
+      width: 16px;
+      height: 16px;
+      border-radius: 4px;
+      border: 1px solid var(--border2);
+      cursor: pointer;
+    }
+
+    .ft-name {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .ft-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      letter-spacing: 0.05em;
+    }
+
+    .ft-icon.csv {
+      background: #ECFDF5;
+      color: #10B981;
+    }
+
+    .ft-icon.pdf {
+      background: #FEF2F2;
+      color: #EF4444;
+    }
+
+    .ft-icon.json {
+      background: #FFFBEB;
+      color: #F59E0B;
+    }
+
+    .ft-icon.excel {
+      background: #ECFDF5;
+      color: #059669;
+    }
+
+    .pipeline-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .status-indicator {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .status-indicator.success {
+      background: #10B981;
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+    }
+
+    .status-indicator.processing {
+      background: #F59E0B;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% {
+        box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4);
+      }
+
+      70% {
+        box-shadow: 0 0 0 6px rgba(245, 158, 11, 0);
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(245, 158, 11, 0);
+      }
+    }
+
+    .progress-track {
+      width: 80px;
+      height: 4px;
+      background: var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 4px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 4px;
+    }
+
+    .action-menu {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .action-btn {
+      background: none;
+      border: none;
+      color: var(--text3);
+      cursor: pointer;
+      padding: 6px;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+
+    .action-btn:hover {
+      background: var(--surface2);
+      color: var(--accent);
+    }
+
+    .action-btn.delete:hover {
+      background: #FEF2F2;
+      color: #EF4444;
+    }
+
+    .action-btn svg {
+      width: 16px;
+      height: 16px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+    }
+
+    /* Jobs Execution View */
+    .jobs-view {
+      flex: 1;
+      background: var(--bg);
+      overflow-y: auto;
+      display: none;
+      padding: 32px 40px;
+    }
+
+    .jobs-metrics {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .metric-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: 24px;
+      flex: 1;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .metric-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--border2);
+    }
+
+    .metric-card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 100px;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8));
+    }
+
+    .metric-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .metric-icon.active {
+      background: #EEF2FF;
+      color: var(--accent);
+    }
+
+    .metric-icon.success {
+      background: #ECFDF5;
+      color: #10B981;
+    }
+
+    .metric-icon.failed {
+      background: #FEF2F2;
+      color: #EF4444;
+    }
+
+    .metric-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .metric-val {
+      font-family: var(--font-head);
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.1;
+    }
+
+    .metric-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 4px;
+    }
+
+    .job-badge {
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .job-badge.running {
+      background: #EEF2FF;
+      color: #4338CA;
+      border: 1px solid #E0E7FF;
+    }
+
+    .job-badge.running::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #4338CA;
+      animation: pulse 2s infinite;
+    }
+
+    .job-badge.success {
+      background: #ECFDF5;
+      color: #047857;
+      border: 1px solid #D1FAE5;
+    }
+
+    .job-badge.success::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #10B981;
+    }
+
+    .job-badge.failed {
+      background: #FEF2F2;
+      color: #B91C1C;
+      border: 1px solid #FEE2E2;
+    }
+
+    .job-badge.failed::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #EF4444;
+    }
+
+    .job-id {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .dbx-cluster {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text2);
+    }
+
+    .dbx-icon {
+      width: 12px;
+      height: 12px;
+      fill: #FF3621;
+    }
+
+    /* Databricks approximate red */
+
+    @keyframes spin {
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    .spin {
+      animation: spin 1s linear infinite;
+      transform-origin: center;
+    }
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(15, 23, 42, 0.4);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .modal-overlay.open {
+      display: flex;
+      opacity: 1;
+    }
+    .modal-content {
+      background: var(--surface);
+      width: 540px;
+      max-width: 90vw;
+      border-radius: var(--r2);
+      box-shadow: var(--shadow-lg);
+      transform: translateY(20px);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      flex-direction: column;
+    }
+    .modal-overlay.open .modal-content {
+      transform: translateY(0);
+    }
+    .modal-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-title {
+      font-family: var(--font-head);
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--text);
+    }
+    .modal-body {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      overflow-y: auto;
+      max-height: 70vh;
+    }
+    .modal-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      background: var(--surface2);
+      border-radius: 0 0 var(--r2) var(--r2);
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .row-group {
+      flex-direction: row;
+      gap: 16px;
+    }
+    .row-group .col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .form-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .form-select, .form-input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--border2);
+      border-radius: 8px;
+      font-family: var(--font-body);
+      font-size: 13.5px;
+      color: var(--text);
+      background: var(--surface);
+      outline: none;
+      transition: all 0.2s;
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.02);
+    }
+    .form-select:focus, .form-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    }
+    .form-range {
+      width: 100%;
+      accent-color: var(--accent);
+    }
+    .secondary-btn {
+      background: var(--surface);
+      color: var(--text2);
+      border: 1px solid var(--border2);
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: 13.5px;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: var(--shadow-sm);
+    }
+    .secondary-btn:hover {
+      background: var(--surface2);
+      color: var(--text);
+      border-color: var(--text3);
+      transform: translateY(-1px);
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="shell">
+    <!-- Sidebar matching Anvizent Screenshot -->
+    <div class="sidebar">
+      <div class="sidebar-logo">
+        <div class="anvizent-logo-text"><i>A</i><span class="tail">nvizent</span></div>
+      </div>
+      <div class="sidebar-menu">
+        <div class="nav-section">CONFIGURATION</div>
+        <a class="nav-item" id="nav-rag" onclick="switchNav('rag')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+          </svg>
+          <span class="nav-text">Manage RAG Knowledge</span>
+        </a>
+        <div class="nav-section">MAIN</div>
+        <a class="nav-item active" id="nav-pipeline" onclick="switchNav('pipeline')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path
+              d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z">
+            </path>
+            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+            <line x1="12" y1="22.08" x2="12" y2="12"></line>
+          </svg>
+          <span class="nav-text">Configure Pipeline</span>
+        </a>
+        <a class="nav-item" id="nav-jobs" onclick="switchNav('jobs')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          <span class="nav-text">Jobs & Execution</span>
+        </a>
+
+      </div>
+      <div class="sidebar-footer">v2.1.0 (NextGen)</div>
+    </div>
+
+    <!-- Main Content Layout -->
+    <div class="main-area">
+      <!-- Topbar matching Anvizent Screenshot -->
+      <header class="app-header">
+        <div style="display: flex; align-items: center; gap: 16px;">
+          <button class="icon-btn" onclick="toggleSidebar()" style="color: var(--text); background: var(--surface2); border: 1px solid var(--border); padding: 6px; border-radius: 6px; cursor:pointer;" title="Toggle Sidebar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="18" height="18" stroke-width="2" stroke-linecap="round">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+          <div class="header-title" id="mainHeaderTitle">Configure Pipeline</div>
+        </div>
+        <div class="header-right">
+          <div class="meta-chips">
+            <span class="header-chip partner">Partner: P-1023</span>
+            <span class="header-chip tenant" id="tenantName">Tenant: T-5501</span>
+          </div>
+
+          <div class="header-actions">
+            <button class="icon-btn" title="Notifications">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+              </svg>
+            </button>
+
+            <div class="profile-dropdown" onclick="toggleProfileMenu()">
+              <div class="profile-btn">
+                <div class="avatar">US</div>
+                <div class="profile-info">
+                  <span class="profile-name">User U-8842</span>
+                  <span class="profile-role">Admin</span>
+                </div>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2"
+                  style="margin-left:4px">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </div>
+              <div class="dropdown-menu" id="profileMenu">
+                <div class="dropdown-item">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                  </svg>
+                  My Profile
+                </div>
+                <div class="dropdown-item" onclick="openSettingsModal()">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path
+                      d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                    </path>
+                  </svg>
+                  Settings
+                </div>
+                <div class="dropdown-divider"></div>
+                <div class="dropdown-item" style="color: #EF4444;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:#EF4444;">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                    <polyline points="16 17 21 12 16 7"></polyline>
+                    <line x1="21" y1="12" x2="9" y2="12"></line>
+                  </svg>
+                  Sign out
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Manage RAG Knowledge View (Production Ready) -->
+      <div class="rag-view" id="view-rag">
+        <div class="rag-header-bar">
+          <div class="rag-header-left">
+            <h1 class="rag-title">Knowledge Base</h1>
+            <p class="rag-subtitle">Upload, organize, and index files that power your AI RAG pipelines.</p>
+          </div>
+          <div class="header-stats">
+            <div class="storage-stat">
+              <div class="storage-text">Storage <span>14.6 MB / 1 GB</span></div>
+              <div class="storage-bar">
+                <div class="storage-fill" style="width: 15%"></div>
+              </div>
+            </div>
+            <button class="primary-btn" onclick="document.getElementById('fileInput').click()">
+              <svg viewBox="0 0 24 24">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="17 8 12 3 7 8"></polyline>
+                <line x1="12" y1="3" x2="12" y2="15"></line>
+              </svg>
+              Upload Files
+            </button>
+          </div>
+        </div>
+
+        <div class="rag-content-grid">
+          <!-- Persistent Upload Zone Sidebar -->
+          <div class="upload-panel" onclick="document.getElementById('fileInput').click()">
+            <div class="upload-icon-wrapper">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="12" y1="18" x2="12" y2="12"></line>
+                <line x1="9" y1="15" x2="15" y2="15"></line>
+              </svg>
+            </div>
+            <div class="upload-text-main">Drag & drop files</div>
+            <div class="upload-text-sub">Supported formats: CSV, JSON, PDF, Excel (Max 50MB)</div>
+            <button class="secondary-btn">Browse Local Files</button>
+            <input type="file" id="fileInput" style="display:none" accept=".csv, .xlsx, .xls, .json, .pdf" multiple>
+          </div>
+
+          <!-- File Data Grid -->
+          <div class="file-manager">
+            <div class="fm-toolbar">
+              <div class="fm-search">
+                <svg viewBox="0 0 24 24">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input type="text" placeholder="Search by filename or type...">
+              </div>
+              <div class="fm-filters">
+                <button class="fm-filter-btn active">All Files</button>
+                <button class="fm-filter-btn">Processing</button>
+                <button class="fm-filter-btn">Failed</button>
+              </div>
+            </div>
+
+            <div class="file-table-card">
+              <table class="file-table">
+                <thead>
+                  <tr>
+                    <th style="width:40px"><input type="checkbox" class="ft-checkbox"></th>
+                    <th>File Details</th>
+                    <th>Size</th>
+                    <th>Uploaded</th>
+                    <th>Index Status</th>
+                    <th style="width:100px">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><input type="checkbox" class="ft-checkbox"></td>
+                    <td>
+                      <div class="ft-name">
+                        <div class="ft-icon pdf">PDF</div>
+                        <div>
+                          Employee_Handbook_2026.pdf
+                          <div style="font-size:11px;color:var(--text3);font-weight:400;margin-top:2px;">Tags: hr,
+                            compliance</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>2.4 MB</td>
+                    <td>Apr 16, 2026<br><span style="font-size:11px;color:var(--text3)">by Admin</span></td>
+                    <td>
+                      <div class="pipeline-status">
+                        <div class="status-indicator success"></div>
+                        <span style="font-size:12px;font-weight:500;color:var(--text2)">Indexed successfully</span>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="action-menu">
+                        <button class="action-btn" title="View Details"><svg viewBox="0 0 24 24">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                          </svg></button>
+                        <button class="action-btn delete" title="Delete"><svg viewBox="0 0 24 24">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
+                            </path>
+                          </svg></button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><input type="checkbox" class="ft-checkbox"></td>
+                    <td>
+                      <div class="ft-name">
+                        <div class="ft-icon csv">CSV</div>
+                        historical_sales_data_q1.csv
+                      </div>
+                    </td>
+                    <td>14.1 MB</td>
+                    <td>Apr 14, 2026<br><span style="font-size:11px;color:var(--text3)">by System</span></td>
+                    <td>
+                      <div class="pipeline-status">
+                        <div class="status-indicator success"></div>
+                        <span style="font-size:12px;font-weight:500;color:var(--text2)">Indexed successfully</span>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="action-menu">
+                        <button class="action-btn" title="View Details"><svg viewBox="0 0 24 24">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                          </svg></button>
+                        <button class="action-btn delete" title="Delete"><svg viewBox="0 0 24 24">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
+                            </path>
+                          </svg></button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><input type="checkbox" class="ft-checkbox"></td>
+                    <td>
+                      <div class="ft-name">
+                        <div class="ft-icon json">JSON</div>
+                        <div>
+                          Q1_product_catalog_export.json
+                          <div style="font-size:11px;color:var(--accent);font-weight:500;margin-top:2px;">Chunking:
+                            semantic (34%)</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>800 KB</td>
+                    <td>Just now<br><span style="font-size:11px;color:var(--text3)">by Admin</span></td>
+                    <td>
+                      <div class="pipeline-status" style="flex-direction:column;align-items:flex-start;gap:4px;">
+                        <div style="display:flex;align-items:center;gap:6px;">
+                          <div class="status-indicator processing"></div>
+                          <span style="font-size:12px;font-weight:600;color:#F59E0B">Generating embeddings...</span>
+                        </div>
+                        <div class="progress-track">
+                          <div class="progress-fill" style="width:34%"></div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="action-menu">
+                        <button class="action-btn" title="View Details"><svg viewBox="0 0 24 24">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                          </svg></button>
+                        <button class="action-btn delete" title="Cancel/Delete"><svg viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="15" y1="9" x2="9" y2="15"></line>
+                            <line x1="9" y1="9" x2="15" y2="15"></line>
+                          </svg></button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Jobs & Execution View -->
+      <div class="jobs-view" id="view-jobs">
+        <div class="rag-header-bar">
+          <div class="rag-header-left">
+            <h1 class="rag-title">Jobs & Execution</h1>
+            <p class="rag-subtitle">Monitor Databricks pipeline runs, clusters, and workflow performance.</p>
+          </div>
+          <div class="header-stats">
+            <button class="primary-btn" onclick="refreshJobsStatus(this)">
+              <svg viewBox="0 0 24 24">
+                <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.59-9.21l-5.42 5.42"></path>
+              </svg>
+              Refresh Status
+            </button>
+          </div>
+        </div>
+
+        <div class="jobs-metrics">
+          <div class="metric-card">
+            <div class="metric-icon active">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                <line x1="8" y1="21" x2="16" y2="21"></line>
+                <line x1="12" y1="17" x2="12" y2="21"></line>
+              </svg>
+            </div>
+            <div class="metric-info">
+              <div class="metric-val">3</div>
+              <div style="font-size:13px;color:var(--text3);margin-top:2px;">Active Clusters</div>
+            </div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-icon active">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+              </svg>
+            </div>
+            <div class="metric-info">
+              <div class="metric-val">12</div>
+              <div style="font-size:13px;color:var(--text3);margin-top:2px;">Running Jobs</div>
+            </div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-icon success">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+              </svg>
+            </div>
+            <div class="metric-info">
+              <div class="metric-val">104</div>
+              <div style="font-size:13px;color:var(--text3);margin-top:2px;">Completed Today</div>
+            </div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-icon failed">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+            </div>
+            <div class="metric-info">
+              <div class="metric-val" style="color:#EF4444">2</div>
+              <div style="font-size:13px;color:var(--text3);margin-top:2px;">Failed Jobs</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="file-table-card">
+          <div class="fm-toolbar">
+            <div class="fm-search">
+              <svg viewBox="0 0 24 24">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+              <input type="text" placeholder="Search Run ID or Job Name...">
+            </div>
+            <div class="fm-filters">
+              <button class="fm-filter-btn active">All Runs</button>
+              <button class="fm-filter-btn">Succeeded</button>
+              <button class="fm-filter-btn">Failed</button>
+            </div>
+          </div>
+          <table class="file-table">
+            <thead>
+              <tr>
+                <th>Run ID</th>
+                <th>Job Name / Tier</th>
+                <th>Cluster / Workspace</th>
+                <th>Duration</th>
+                <th>Status</th>
+                <th style="width:80px">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="font-family:var(--font-mono);font-size:13px;font-weight:600;color:var(--accent)">#run_94218
+                </td>
+                <td>
+                  <div style="font-weight:600;color:var(--text)">Ingest_Sales_Daily</div>
+                  <div style="font-size:11px;margin-top:2px;"><span class="tier-chip bronze"
+                      style="padding:2px 6px;margin:0"><span class="tier-chip-dot"></span>Bronze</span></div>
+                </td>
+                <td>
+                  <div style="font-size:13px;color:var(--text)">prod-cluster-01</div>
+                  <div style="font-size:11px;color:var(--text3);margin-top:2px;">Workspace: ws-eu-west</div>
+                </td>
+                <td>4m 12s</td>
+                <td>
+                  <div class="pipeline-status">
+                    <div class="status-indicator processing"></div>
+                    <span style="font-size:12px;font-weight:600;color:#F59E0B">Running</span>
+                  </div>
+                </td>
+                <td>
+                  <button class="action-btn" title="View Logs"><svg viewBox="0 0 24 24">
+                      <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg></button>
+                </td>
+              </tr>
+              <tr>
+                <td style="font-family:var(--font-mono);font-size:13px;font-weight:600;color:var(--accent)">#run_94217
+                </td>
+                <td>
+                  <div style="font-weight:600;color:var(--text)">Embed_Product_Catalog</div>
+                  <div style="font-size:11px;margin-top:2px;"><span class="tier-chip platinum"
+                      style="padding:2px 6px;margin:0"><span class="tier-chip-dot"></span>Platinum</span></div>
+                </td>
+                <td>
+                  <div style="font-size:13px;color:var(--text)">gpu-cluster-embed</div>
+                  <div style="font-size:11px;color:var(--text3);margin-top:2px;">Workspace: ws-us-east</div>
+                </td>
+                <td>12m 45s</td>
+                <td>
+                  <div class="pipeline-status">
+                    <div class="status-indicator success"></div>
+                    <span style="font-size:12px;font-weight:500;color:var(--text2)">Succeeded</span>
+                  </div>
+                </td>
+                <td>
+                  <button class="action-btn" title="View Logs"><svg viewBox="0 0 24 24">
+                      <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg></button>
+                </td>
+              </tr>
+              <tr>
+                <td style="font-family:var(--font-mono);font-size:13px;font-weight:600;color:var(--accent)">#run_94215
+                </td>
+                <td>
+                  <div style="font-weight:600;color:var(--text)">Aggregate_KPI_Weekly</div>
+                  <div style="font-size:11px;margin-top:2px;"><span class="tier-chip gold"
+                      style="padding:2px 6px;margin:0"><span class="tier-chip-dot"></span>Gold</span></div>
+                </td>
+                <td>
+                  <div style="font-size:13px;color:var(--text)">compute-shared-03</div>
+                  <div style="font-size:11px;color:var(--text3);margin-top:2px;">Workspace: ws-eu-west</div>
+                </td>
+                <td>1m 02s</td>
+                <td>
+                  <div class="pipeline-status">
+                    <div class="status-indicator" style="background:#EF4444;box-shadow:none"></div>
+                    <span style="font-size:12px;font-weight:500;color:#EF4444">Failed (OOM)</span>
+                  </div>
+                </td>
+                <td>
+                  <button class="action-btn" title="View Logs"><svg viewBox="0 0 24 24">
+                      <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg></button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Pipeline Builder Application -->
+      <div class="app" id="view-pipeline">
+        <div class="left-panel">
+          <div class="topbar">
+            <div class="topbar-brand">
+              <div class="brand-icon">
+                <svg viewBox="0 0 24 24">
+                  <path d="M4 6h16M4 12h8M4 18h12" stroke-linecap="round" />
+                </svg>
+              </div>
+              <span class="brand-name">Pipeline Studio</span>
+              <span class="brand-tag">NLP Builder</span>
+            </div>
+            <div class="topbar-meta">
+              <span class="header-chip session-chip inactive" id="sessionChip" style="font-size:11px; padding:3px 10px; height: 23.5px;" onclick="toggleSession()"><span class="chip-dot"></span>Session: Inactive</span>
+              <span class="status-pill" id="statusPill">● idle</span>
+            </div>
+          </div>
+
+          <div class="chat-area" id="chatArea">
+            <div class="msg ai">
+              <div class="msg-avatar ai">AI</div>
+              <div class="msg-body">
+                <div class="msg-sender">Pipeline AI</div>
+                <div class="welcome-card">
+                  <div class="wc-title">Build your data pipeline</div>
+                  <div class="wc-sub">Describe your pipeline in plain English. I'll extract the config and build the
+                    JSON for Bronze, Silver, Gold, and Platinum jobs automatically.</div>
+                  <div class="wc-tiers">
+                    <span class="tier-chip bronze"><span class="tier-chip-dot"></span>Bronze</span>
+                    <span class="tier-chip silver"><span class="tier-chip-dot"></span>Silver</span>
+                    <span class="tier-chip gold"><span class="tier-chip-dot"></span>Gold</span>
+                    <span class="tier-chip platinum"><span class="tier-chip-dot"></span>Platinum</span>
+                  </div>
+                </div>
+                <div class="msg-text" style="margin-top:10px">Try saying something like:<br><b>"I want to ingest sales
+                    data from REST API daily, clean it, build weekly KPI rollups, and embed product descriptions for
+                    search."</b></div>
+                <div class="quick-actions">
+                  <button class="qa-btn"
+                    onclick="quickFill('I want to ingest customer orders from a REST API every hour, clean and validate the data, build daily revenue aggregations, and create embeddings for product recommendations using OpenAI')">E-commerce
+                    pipeline</button>
+                  <button class="qa-btn"
+                    onclick="quickFill('Set up a pipeline to pull IoT sensor data via Kafka, filter and normalise it, compute hourly averages, and store vectors in Pinecone for anomaly detection')">IoT
+                    analytics</button>
+                  <button class="qa-btn"
+                    onclick="quickFill('Build a financial data pipeline: CSV drops from SFTP daily, schema validation and dedup, monthly P&L aggregations, embed transaction notes for fraud detection')">Finance
+                    pipeline</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="input-area">
+            <div class="input-row">
+              <div class="input-wrap">
+                <textarea id="userInput" placeholder="Activate session to describe your pipeline..." rows="1"
+                  onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+              </div>
+              <button class="send-btn" onclick="sendMessage()">
+                <svg viewBox="0 0 24 24">
+                  <line x1="22" y1="2" x2="11" y2="13" />
+                  <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                </svg>
+              </button>
+            </div>
+            <div class="input-hint">Press Enter to send &nbsp;·&nbsp; Shift+Enter for new line</div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="right-panel">
+          <div class="right-topbar">
+            <div class="panel-tabs">
+              <button class="panel-tab active" onclick="switchTab('pipeline',this)">Narrative</button>
+              <button class="panel-tab" onclick="switchTab('flow',this)">Flow</button>
+              <button class="panel-tab" onclick="switchTab('json',this)">JSON</button>
+            </div>
+            <button class="copy-btn" onclick="copyJSON()" id="copyBtn">copy JSON</button>
+          </div>
+          <div class="right-content" id="rightContent">
+            <div class="pipeline-view" id="pipelineView">
+              <div class="empty-state">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <rect x="3" y="3" width="18" height="18" rx="3" />
+                  <path d="M3 9h18M9 21V9" />
+                </svg>
+                <p>Describe your pipeline in the chat<br>and jobs will appear here</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const ANTHROPIC_API = "https://api.anthropic.com/v1/messages";
+    let pipelineState = { tenant: {}, tiers: [] };
+    let activeTab = 'pipeline';
+    let isSessionActive = false;
+
+    const SYSTEM_PROMPT = `You are a data pipeline configuration expert. The user will describe their data pipeline in natural language. Your job is to extract structured configuration and respond in two parts:
+
+1. A friendly conversational reply acknowledging what you understood
+2. A JSON config block wrapped in <PIPELINE_JSON>...</PIPELINE_JSON> tags
+
+The JSON must follow this exact schema:
+{
+  "tenant": {
+    "name": "string (extract from context or use 'Default Tenant')",
+    "id": "snake_case_id",
+    "environment": "dev|staging|prod",
+    "owner": "email if mentioned else empty string"
+  },
+  "tiers": ["bronze","silver","gold","platinum"] (only include tiers mentioned or implied),
+  "bronze": {
+    "enabled": true/false,
+    "job_name": "string",
+    "sources": ["array of source types mentioned"],
+    "format": "JSON|CSV|Parquet|Avro|Delta",
+    "trigger": "scheduled|event-driven|streaming|manual",
+    "schedule": "cron expression",
+    "landing_zone": "/raw/tenant_id/",
+    "partition_by": ["date","source"],
+    "retention_days": 90
+  },
+  "silver": {
+    "enabled": true/false,
+    "job_name": "string",
+    "quality_checks": ["array of checks implied"],
+    "deduplication": true/false,
+    "schema_drift": "reject|evolve|ignore",
+    "output_format": "Delta|Parquet",
+    "sla_hours": 2
+  },
+  "gold": {
+    "enabled": true/false,
+    "job_name": "string",
+    "aggregations": ["array of aggregation types"],
+    "output_format": "Delta|Parquet",
+    "domain": "string domain area",
+    "schedule": "cron or after silver",
+    "cache_ttl_minutes": 60
+  },
+  "platinum": {
+    "enabled": true/false,
+    "job_name": "string",
+    "embedding_model": "model name if mentioned else 'text-embedding-3-small'",
+    "chunk_strategy": "sentence|paragraph|fixed-token|semantic",
+    "vector_db": "Pinecone|Weaviate|Qdrant|pgvector|ChromaDB if mentioned",
+    "retrieval_top_k": 5,
+    "metadata_fields": ["array of fields"],
+    "index_name": "string"
+  },
+  "orchestration": {
+    "trigger": "scheduled|event-driven|streaming|manual",
+    "retry_attempts": 3,
+    "alert_email": "email if mentioned else empty"
+  }
+}
+
+Only include tiers that are clearly mentioned or strongly implied. If a tier is not included, set enabled:false and omit details.
+Be smart about inferring: "daily ingestion" = bronze scheduled, "clean data" = silver, "KPI rollups" = gold, "embeddings/search/RAG/AI" = platinum.
+Always return valid JSON inside the tags.`;
+
+    async function callClaude(userMsg) {
+      const resp = await fetch(ANTHROPIC_API, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-20250514",
+          max_tokens: 1000,
+          system: SYSTEM_PROMPT,
+          messages: [{ role: "user", content: userMsg }]
+        })
+      });
+      const data = await resp.json();
+      return data.content?.[0]?.text || "";
+    }
+
+    function parseResponse(raw) {
+      const jsonMatch = raw.match(/<PIPELINE_JSON>([\s\S]*?)<\/PIPELINE_JSON>/);
+      let json = null;
+      let text = raw.replace(/<PIPELINE_JSON>[\s\S]*?<\/PIPELINE_JSON>/g, "").trim();
+      if (jsonMatch) {
+        try { json = JSON.parse(jsonMatch[1].trim()); } catch (e) { }
+      }
+      return { text, json };
+    }
+
+    function addMsg(role, content, isTyping = false) {
+      const area = document.getElementById('chatArea');
+      const div = document.createElement('div');
+      div.className = `msg ${role}`;
+      div.innerHTML = `
+    <div class="msg-avatar ${role}">${role === 'ai' ? 'AI' : 'Me'}</div>
+    <div class="msg-body">
+      <div class="msg-sender">${role === 'ai' ? 'Pipeline AI' : 'You'}</div>
+      <div class="msg-text">${isTyping ? '<div class="typing-indicator"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div>' : content}</div>
+    </div>`;
+      area.appendChild(div);
+      area.scrollTo({ top: area.scrollHeight, behavior: 'smooth' });
+      return div;
+    }
+
+    function renderTierChips(tiers) {
+      const names = ['bronze', 'silver', 'gold', 'platinum'];
+      return `<div class="tier-chips">${names.map(n => `<span class="tier-chip ${n} ${tiers.includes(n) ? 'active' : ''}">${n === 'active' ? '✓' : ''}<span class="tier-chip-dot"></span>${n.charAt(0).toUpperCase() + n.slice(1)}</span>`).join('')}</div>`;
+    }
+
+    function updatePipelineView(json) {
+      if (!json) return;
+      pipelineState = json;
+      if (json.tenant?.name) document.getElementById('tenantName').textContent = json.tenant.name;
+      document.getElementById('statusPill').textContent = 'configured';
+      if (activeTab === 'pipeline') renderPipelineTab(json);
+      else if (activeTab === 'flow') renderFlowTab(json);
+      else renderJsonTab(json);
+    }
+
+    function renderPipelineTab(json) {
+      const tiers = json.tiers || [];
+      const defs = {
+        bronze: { label: 'Bronze', badge: 'RAW', cls: 'bronze' },
+        silver: { label: 'Silver', badge: 'CLEANSED', cls: 'silver' },
+        gold: { label: 'Gold', badge: 'CURATED', cls: 'gold' },
+        platinum: { label: 'Platinum', badge: 'AI/ML', cls: 'platinum' }
+      };
+      let html = '<div class="pipeline-view">';
+      if (!tiers.length) { html += '<div class="empty-state"><p>No tiers configured yet</p></div>'; }
+      else {
+        tiers.forEach(t => {
+          const d = defs[t]; if (!d) return;
+          const cfg = json[t] || {};
+          html += `<div class="tier-block ${d.cls}">
+        <div class="tier-header">
+          <div class="tier-hl">
+            <span class="tier-label">${d.label}</span>
+            <span class="tier-badge">${d.badge}</span>
+          </div>
+          <span class="tier-status ready">● active</span>
+        </div>
+        <div class="tier-body">`;
+          if (t === 'bronze') {
+            html += field('Job', cfg.job_name || 'bronze_ingest');
+            html += field('Trigger', cfg.trigger || 'scheduled');
+            html += field('Schedule', cfg.schedule || '—');
+            html += field('Format', cfg.format || '—');
+            html += fieldTags('Sources', cfg.sources || [], d.cls);
+          } else if (t === 'silver') {
+            html += field('Job', cfg.job_name || 'silver_clean');
+            html += field('Dedup', cfg.deduplication ? 'enabled' : 'disabled');
+            html += field('Schema drift', cfg.schema_drift || 'reject');
+            html += field('Output', cfg.output_format || 'Delta');
+            html += fieldTags('Quality checks', cfg.quality_checks || [], d.cls);
+          } else if (t === 'gold') {
+            html += field('Job', cfg.job_name || 'gold_aggregate');
+            html += field('Domain', cfg.domain || '—');
+            html += field('Output', cfg.output_format || 'Delta');
+            html += field('Cache TTL', (cfg.cache_ttl_minutes || 60) + 'm');
+            html += fieldTags('Aggregations', cfg.aggregations || [], d.cls);
+          } else if (t === 'platinum') {
+            html += field('Job', cfg.job_name || 'platinum_embed');
+            html += field('Model', cfg.embedding_model || '—');
+            html += field('Chunking', cfg.chunk_strategy || 'sentence');
+            html += field('Vector DB', cfg.vector_db || '—');
+            html += fieldTags('Metadata', cfg.metadata_fields || [], d.cls);
+          }
+          html += `</div></div>`;
+        });
+      }
+      if (json.orchestration) {
+        const o = json.orchestration;
+        html += `<div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r2);padding:12px 14px;margin-bottom:12px">
+      <div style="font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);font-family:var(--font-mono);margin-bottom:8px">Orchestration</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        ${field('Trigger', o.trigger || 'scheduled')}
+        ${field('Retries', o.retry_attempts || 3)}
+        ${field('Alert', o.alert_email || '—')}
+        ${field('Env', json.tenant?.environment || 'dev')}
+      </div></div>`;
+      }
+      html += '</div>';
+      document.getElementById('rightContent').innerHTML = html;
+    }
+
+    function renderFlowTab(json) {
+      const tiers = json.tiers || [];
+      const flowDefs = {
+        bronze: { name: 'Bronze — Raw ingestion', desc: 'Land raw data from sources', color: 'var(--bronze)', iconPath: 'M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 10V11' },
+        silver: { name: 'Silver — Cleanse & validate', desc: 'Quality checks, dedup, schema', color: 'var(--silver)', iconPath: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z' },
+        gold: { name: 'Gold — Aggregate & curate', desc: 'Business logic, KPIs, rollups', color: 'var(--gold)', iconPath: 'M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z' },
+        platinum: { name: 'Platinum — Embed & index', desc: 'Vectors, RAG, AI/ML ready', color: 'var(--platinum)', iconPath: 'M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z' }
+      };
+      let html = '<div class="flow-view"><div class="flow-pipeline">';
+      const src = { name: 'Source systems', desc: ((json.bronze?.sources || []).join(', ')) || 'External data sources', color: 'var(--text3)', iconPath: 'M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4' };
+      html += flowNode(src, false);
+      if (tiers.length) html += `<div class="flow-line"></div>`;
+      tiers.forEach((t, i) => {
+        const d = flowDefs[t]; if (!d) return;
+        html += flowNode(d, true);
+        if (i < tiers.length - 1) html += `<div class="flow-line" style="border-left:2px dashed var(--border);background:none"></div>`;
+      });
+      if (tiers.includes('platinum')) {
+        html += `<div class="flow-line"></div>`;
+        html += flowNode({ name: 'Vector store / RAG endpoint', desc: json.platinum?.vector_db || 'AI retrieval layer', color: '#6c63ff', iconPath: 'M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z' }, false);
+      }
+      html += '</div></div>';
+      document.getElementById('rightContent').innerHTML = html;
+    }
+
+    function flowNode(d, colored) {
+      return `<div class="flow-node">
+    <div class="flow-card">
+      <div class="flow-icon" style="background:${colored ? d.color + '22' : 'var(--surface3)'};border:1px solid ${colored ? d.color + '44' : 'var(--border)'}">
+        <svg viewBox="0 0 24 24" stroke="${d.color}" fill="none"><path d="${d.iconPath}" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="flow-info">
+        <div class="flow-name" style="color:${colored ? d.color : 'var(--text)'}">${d.name}</div>
+        <div class="flow-desc">${d.desc}</div>
+      </div>
+      <span class="flow-arrow">→</span>
+    </div>
+  </div>`;
+    }
+
+    function renderJsonTab(json) {
+      const formatted = JSON.stringify(json, null, 2);
+      const highlighted = formatted
+        .replace(/("[\w_]+")\s*:/g, '<span class="json-key">$1</span>:')
+        .replace(/:\s*(".*?")/g, ': <span class="json-str">$1</span>')
+        .replace(/:\s*(\d+\.?\d*)/g, ': <span class="json-num">$1</span>')
+        .replace(/:\s*(true|false)/g, ': <span class="json-bool">$1</span>')
+        .replace(/:\s*(null)/g, ': <span class="json-null">$1</span>')
+        .replace(/([{}\[\]])/g, '<span class="json-bracket">$1</span>');
+      document.getElementById('rightContent').innerHTML = `
+        <div style="display: flex; flex-direction: column; height: 100%;">
+          <div class="json-view" style="flex: 1; overflow-y: auto; margin-bottom: 24px;">
+            <pre style="white-space:pre-wrap;word-break:break-word">${highlighted}</pre>
+          </div>
+          <div style="display: flex; justify-content: flex-start; padding-top: 16px; border-top: 1px solid var(--border);">
+            <button class="primary-btn" id="submitJobBtn" onclick="submitPipelineJob()" style="padding: 10px 24px; font-weight: 600;">
+              <svg viewBox="0 0 24 24" width="18" height="18" style="margin-right: 8px;">
+                <path d="M22 2L11 13"></path>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+              </svg>
+              Submit Job
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function submitPipelineJob() {
+      const btn = document.getElementById("submitJobBtn");
+      btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="margin-right: 8px;"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" stroke-dasharray="31.4" class="spin"></circle></svg> Submitting...`;
+      btn.disabled = true;
+      btn.style.opacity = '0.7';
+
+      setTimeout(() => {
+        btn.innerHTML = `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" style="margin-right: 8px;"><polyline points="20 6 9 17 4 12"></polyline></svg> Job Submitted`;
+        btn.style.background = '#10B981';
+        btn.style.borderColor = '#10B981';
+        btn.style.opacity = '1';
+
+        setTimeout(() => {
+          switchNav('jobs');
+        }, 1200);
+      }, 1500);
+    }
+
+    function field(label, value) {
+      return `<div class="tier-field"><span class="tf-label">${label}</span><span class="tf-value">${value}</span></div>`;
+    }
+    function fieldTags(label, arr, cls) {
+      if (!arr.length) return field(label, '—');
+      return `<div class="tier-field" style="grid-column:1/-1"><span class="tf-label">${label}</span><div class="tf-tag-row">${arr.map(t => `<span class="tf-tag ${cls}">${t}</span>`).join('')}</div></div>`;
+    }
+
+    function switchTab(tab, el) {
+      activeTab = tab;
+      document.querySelectorAll('.panel-tab').forEach(b => b.classList.remove('active'));
+      el.classList.add('active');
+      if (!pipelineState.tiers?.length) return;
+      if (tab === 'pipeline') renderPipelineTab(pipelineState);
+      else if (tab === 'flow') renderFlowTab(pipelineState);
+      else renderJsonTab(pipelineState);
+    }
+
+    function copyJSON() {
+      const txt = JSON.stringify(pipelineState, null, 2);
+      navigator.clipboard.writeText(txt).then(() => {
+        const btn = document.getElementById('copyBtn');
+        btn.textContent = 'copied!';
+        setTimeout(() => btn.textContent = 'copy JSON', 1500);
+      });
+    }
+
+    async function sendMessage() {
+      if (!isSessionActive) {
+        alert("Please activate the session to enable the NLP Pipeline Builder.");
+        return;
+      }
+      
+      const inp = document.getElementById('userInput');
+      const txt = inp.value.trim();
+      if (!txt) return;
+      inp.value = '';
+      inp.style.height = 'auto';
+
+      addMsg('user', txt.replace(/\n/g, '<br>'));
+      const typingMsg = addMsg('ai', '', true);
+      document.getElementById('statusPill').textContent = 'thinking...';
+
+      try {
+        const raw = await callClaude(txt);
+        const { text, json } = parseResponse(raw);
+        let parsedText = text.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+        typingMsg.querySelector('.msg-text').innerHTML = parsedText;
+        if (json) {
+          updatePipelineView(json);
+          const chips = json.tiers?.length ? renderTierChips(json.tiers) : '';
+          if (chips) typingMsg.querySelector('.msg-text').innerHTML += chips;
+        }
+      } catch (e) {
+        typingMsg.querySelector('.msg-text').textContent = 'Something went wrong. Please try again.';
+      }
+      document.getElementById('statusPill').textContent = pipelineState.tiers?.length ? 'configured' : 'idle';
+    }
+
+    function quickFill(txt) {
+      document.getElementById('userInput').value = txt;
+      autoResize(document.getElementById('userInput'));
+      sendMessage();
+    }
+
+    function handleKey(e) {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+    }
+
+    function autoResize(el) {
+      el.style.height = 'auto';
+      el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+    }
+
+    function switchNav(view) {
+      document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+      document.getElementById('nav-' + view).classList.add('active');
+
+      if (view === 'pipeline') {
+        document.getElementById('mainHeaderTitle').textContent = 'Configure Pipeline';
+        document.getElementById('view-pipeline').style.display = 'grid';
+        document.getElementById('view-rag').style.display = 'none';
+        document.getElementById('view-jobs').style.display = 'none';
+      } else if (view === 'rag') {
+        document.getElementById('mainHeaderTitle').textContent = 'Manage RAG Knowledge';
+        document.getElementById('view-pipeline').style.display = 'none';
+        document.getElementById('view-rag').style.display = 'block';
+        document.getElementById('view-jobs').style.display = 'none';
+      } else if (view === 'jobs') {
+        document.getElementById('mainHeaderTitle').textContent = 'Jobs & Execution';
+        document.getElementById('view-pipeline').style.display = 'none';
+        document.getElementById('view-rag').style.display = 'none';
+        document.getElementById('view-jobs').style.display = 'block';
+      }
+    }
+
+    function toggleSidebar() {
+      document.querySelector('.sidebar').classList.toggle('collapsed');
+    }
+
+    function toggleProfileMenu() {
+      document.querySelector('.profile-dropdown').classList.toggle('open');
+    }
+
+    function toggleSession() {
+      const chip = document.getElementById('sessionChip');
+      if (chip.classList.contains('starting')) return;
+      
+      if (isSessionActive) {
+        isSessionActive = false;
+        chip.className = 'header-chip session-chip inactive';
+        chip.innerHTML = '<span class="chip-dot"></span>Session: Inactive';
+        document.getElementById('userInput').placeholder = 'Activate session to describe your pipeline...';
+      } else {
+        chip.className = 'header-chip session-chip starting';
+        chip.innerHTML = '<span class="chip-dot"></span>Activating...';
+        setTimeout(() => {
+          isSessionActive = true;
+          chip.className = 'header-chip session-chip active';
+          chip.innerHTML = '<span class="chip-dot"></span>Session: Active';
+          document.getElementById('userInput').placeholder = 'Describe your pipeline in plain English...';
+        }, 1500);
+      }
+    }
+
+    function openSettingsModal() {
+      const modal = document.getElementById('settingsModal');
+      modal.style.display = 'flex';
+      setTimeout(() => modal.classList.add('open'), 10);
+      document.querySelector('.profile-dropdown').classList.remove('open');
+    }
+    
+    function closeSettingsModal() {
+      const modal = document.getElementById('settingsModal');
+      modal.classList.remove('open');
+      setTimeout(() => modal.style.display = 'none', 200);
+    }
+
+    // Close dropdown when clicking outside
+    window.addEventListener('click', function (e) {
+      if (!e.target.closest('.profile-dropdown')) {
+        document.querySelector('.profile-dropdown').classList.remove('open');
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('fileInput').addEventListener('change', function(e) {
+        if(this.files && this.files.length > 0) {
+          const fileNames = Array.from(this.files).map(f => f.name).join(', ');
+          const uploadText = document.querySelector('.upload-text-main');
+          if (uploadText) {
+            const original = uploadText.innerHTML;
+            uploadText.innerHTML = `<span style="color:#10B981;">Uploading ${this.files.length} file(s)...</span>`;
+            setTimeout(() => uploadText.innerHTML = original, 3000);
+          }
+          // Reset input for re-triggering
+          this.value = '';
+        }
+      });
+    });
+
+    function refreshJobsStatus(btn) {
+      const icon = btn.querySelector('svg');
+      if (icon) {
+        icon.classList.add('spin');
+        setTimeout(() => icon.classList.remove('spin'), 1500);
+      }
+    }
+
+    function saveSettings(btn) {
+      const originalText = btn.innerHTML;
+      btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="16" height="16" stroke-width="2" style="margin-right:6px;vertical-align:bottom"><polyline points="20 6 9 17 4 12"></polyline></svg> Saved!`;
+      btn.style.background = '#10B981';
+      btn.style.borderColor = '#10B981';
+      setTimeout(() => {
+        closeSettingsModal();
+        setTimeout(() => {
+          btn.innerHTML = originalText;
+          btn.style.background = '';
+          btn.style.borderColor = '';
+        }, 500);
+      }, 1000);
+    }
+  </script>
+  <!-- Settings Modal Overlay -->
+  <div class="modal-overlay" id="settingsModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title">RAG Configuration Settings</div>
+        <button class="icon-btn" onclick="closeSettingsModal()" style="color: var(--text3)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="20" height="20" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Default Embedding Model</label>
+          <select class="form-select">
+            <option>text-embedding-3-small (OpenAI)</option>
+            <option>text-embedding-3-large (OpenAI)</option>
+            <option>titan-embed-text-v1 (AWS)</option>
+            <option>Cohere-embed-english-v3.0</option>
+          </select>
+        </div>
+        <div class="form-group row-group">
+          <div class="col">
+            <label class="form-label">Chunking Strategy</label>
+            <select class="form-select">
+              <option>Semantic Splitting</option>
+              <option>Fixed Token Window</option>
+              <option>Paragraphs</option>
+            </select>
+          </div>
+          <div class="col">
+            <label class="form-label">Chunk Size (Tokens)</label>
+            <input type="number" class="form-input" value="1024">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Vector Database Provider</label>
+          <select class="form-select">
+            <option>Pinecone</option>
+            <option>Qdrant</option>
+            <option>Weaviate</option>
+            <option>Milvus</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Retrieval Settings (Top-K)</label>
+          <input type="range" min="1" max="20" value="5" class="form-range" oninput="document.getElementById('topk-val').innerText = this.value">
+          <div style="text-align: right; font-size:12px; margin-top:4px; font-weight:600;"><span id="topk-val">5</span> chunks</div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="secondary-btn" onclick="closeSettingsModal()">Cancel</button>
+        <button class="primary-btn" onclick="saveSettings(this)">Save Configurations</button>
+      </div>
+    </div>
+  </div>
+
+</body>
+
+</html>
