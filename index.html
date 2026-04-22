@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -79,11 +80,35 @@
       text-rendering: optimizeLegibility;
     }
 
+    /* Global Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(0,0,0,0.12);
+      border-radius: 6px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(0,0,0,0.22);
+    }
+
     /* App Shell Layout */
     .shell {
       display: flex;
+      flex-direction: column;
       height: 100vh;
       width: 100vw;
+    }
+    
+    .shell-content {
+      display: flex;
+      flex: 1;
+      height: calc(100vh - 64px);
+      overflow: hidden;
     }
 
     .sidebar {
@@ -172,7 +197,7 @@
     }
 
     .sidebar-menu::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(0, 0, 0, 0.1);
       border-radius: 4px;
     }
 
@@ -190,7 +215,7 @@
       align-items: center;
       gap: 12px;
       padding: 10px 12px;
-      color: var(--sidebar-text);
+      color: var(--text2);
       border-radius: 8px;
       cursor: pointer;
       transition: all 0.2s;
@@ -200,13 +225,13 @@
     }
 
     .nav-item:hover {
-      background: var(--sidebar-hover);
-      color: var(--sidebar-active-text);
+      background: var(--surface2);
+      color: var(--text);
     }
 
     .nav-item.active {
-      background: var(--sidebar-hover);
-      color: var(--sidebar-active-text);
+      background: var(--surface2);
+      color: var(--text);
       position: relative;
     }
 
@@ -219,6 +244,21 @@
       width: 3px;
       background: var(--accent);
       border-radius: 0 4px 4px 0;
+    }
+
+    .menu-icon-box {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    
+    .menu-icon-box svg {
+      stroke: #FFFFFF;
     }
 
     .sidebar-footer {
@@ -237,20 +277,32 @@
       min-width: 0;
     }
 
+    /* Workspace Header */
+    .workspace-header {
+      background: linear-gradient(90deg, #117B94 0%, #1595B3 100%);
+      color: #FFFFFF;
+      padding: 14px 24px;
+      font-size: 15px;
+      font-weight: 600;
+      flex-shrink: 0;
+      box-shadow: 0 4px 12px rgba(17, 123, 148, 0.15);
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+      letter-spacing: 0.01em;
+    }
+
     /* Header */
     .app-header {
       height: 64px;
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      width: 100vw;
+      background: #FFFFFF;
       border-bottom: 1px solid rgba(226, 232, 240, 0.8);
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 0 24px;
       flex-shrink: 0;
-      box-shadow: var(--shadow-sm);
-      z-index: 10;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.02), 0 1px 3px rgba(0,0,0,0.03);
+      z-index: 100;
     }
 
     .header-title {
@@ -400,7 +452,7 @@
       width: 32px;
       height: 32px;
       border-radius: 50%;
-      background: var(--accent);
+      background: linear-gradient(135deg, var(--accent) 0%, #3B82F6 100%);
       color: #fff;
       display: flex;
       align-items: center;
@@ -408,6 +460,7 @@
       font-weight: 700;
       font-family: var(--font-head);
       font-size: 13px;
+      box-shadow: 0 2px 5px rgba(79, 70, 229, 0.25);
     }
 
     .profile-info {
@@ -2231,117 +2284,100 @@
 
 <body>
   <div class="shell">
-    <!-- Sidebar matching Anvizent Screenshot -->
-    <div class="sidebar">
-      <div class="sidebar-logo">
-        <div class="anvizent-logo-text"><i>A</i><span class="tail">nvizent</span></div>
+    <!-- Topbar matching Anvizent Screenshot -->
+    <header class="app-header">
+      <div style="display: flex; align-items: center; gap: 16px;">
+        <div class="anvizent-logo-text" style="color: #00AEEF; font-size: 28px;">
+          <i>A</i><span class="tail" style="color: #8DC63F;">nvizent</span>
+        </div>
       </div>
-      <div class="sidebar-menu">
-        <div class="nav-section">CONFIGURATION</div>
-        <a class="nav-item" id="nav-rag" onclick="switchNav('rag')">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round">
-            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-          </svg>
-          <span class="nav-text">Manage RAG Knowledge</span>
-        </a>
-        <div class="nav-section">MAIN</div>
-        <a class="nav-item active" id="nav-pipeline" onclick="switchNav('pipeline')">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round">
-            <path
-              d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z">
-            </path>
-            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
-            <line x1="12" y1="22.08" x2="12" y2="12"></line>
-          </svg>
-          <span class="nav-text">Configure Pipeline</span>
-        </a>
-        <a class="nav-item" id="nav-jobs" onclick="switchNav('jobs')">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10"></circle>
-            <polyline points="12 6 12 12 16 14"></polyline>
-          </svg>
-          <span class="nav-text">Jobs & Execution</span>
-        </a>
+      <div class="header-right">
+        <div class="meta-chips">
+          <span class="header-chip partner">Partner: P-1023</span>
+          <span class="header-chip tenant" id="tenantName">Tenant: T-5501</span>
+        </div>
 
+        <div class="header-actions">
+          <button class="icon-btn" title="Notifications">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+          </button>
+
+          <div class="profile-dropdown" onclick="toggleProfileMenu()">
+            <div class="profile-btn">
+              <div class="avatar">US</div>
+              <div class="profile-info">
+                <span class="profile-name">User U-8842</span>
+                <span class="profile-role">Admin</span>
+              </div>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" style="margin-left:4px">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="sidebar-footer">v2.1.0 (NextGen)</div>
-    </div>
+    </header>
 
-    <!-- Main Content Layout -->
-    <div class="main-area">
-      <!-- Topbar matching Anvizent Screenshot -->
-      <header class="app-header">
-        <div style="display: flex; align-items: center; gap: 16px;">
-          <button class="icon-btn" onclick="toggleSidebar()" style="color: var(--text); background: var(--surface2); border: 1px solid var(--border); padding: 6px; border-radius: 6px; cursor:pointer;" title="Toggle Sidebar">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="18" height="18" stroke-width="2" stroke-linecap="round">
+    <div class="shell-content">
+      <!-- Sidebar matching Anvizent Screenshot -->
+      <div class="sidebar">
+        <div class="sidebar-logo" style="border-bottom: none; height: auto; padding: 12px 16px;">
+          <button class="icon-btn" onclick="toggleSidebar()" style="color: var(--text); background: transparent; border: none; cursor:pointer;" title="Toggle Sidebar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="24" height="24" stroke-width="2" stroke-linecap="round">
               <line x1="3" y1="12" x2="21" y2="12"></line>
               <line x1="3" y1="6" x2="21" y2="6"></line>
               <line x1="3" y1="18" x2="21" y2="18"></line>
             </svg>
           </button>
-          <div class="header-title" id="mainHeaderTitle">Configure Pipeline</div>
         </div>
-        <div class="header-right">
-          <div class="meta-chips">
-            <span class="header-chip partner">Partner: P-1023</span>
-            <span class="header-chip tenant" id="tenantName">Tenant: T-5501</span>
-          </div>
-
-          <div class="header-actions">
-            <button class="icon-btn" title="Notifications">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+        <div class="sidebar-menu">
+          <div class="nav-section">CONFIGURATION</div>
+          <a class="nav-item" id="nav-rag" onclick="switchNav('rag')">
+            <div class="menu-icon-box" style="background: #23B5A1;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+                <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
+                <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
               </svg>
-            </button>
-
-            <div class="profile-dropdown" onclick="toggleProfileMenu()">
-              <div class="profile-btn">
-                <div class="avatar">US</div>
-                <div class="profile-info">
-                  <span class="profile-name">User U-8842</span>
-                  <span class="profile-role">Admin</span>
-                </div>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2"
-                  style="margin-left:4px">
-                  <polyline points="6 9 12 15 18 9"></polyline>
-                </svg>
-              </div>
-              <div class="dropdown-menu" id="profileMenu">
-                <div class="dropdown-item">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                    <circle cx="12" cy="7" r="4"></circle>
-                  </svg>
-                  My Profile
-                </div>
-                <div class="dropdown-item" onclick="openSettingsModal()">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="3"></circle>
-                    <path
-                      d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
-                    </path>
-                  </svg>
-                  Settings
-                </div>
-                <div class="dropdown-divider"></div>
-                <div class="dropdown-item" style="color: #EF4444;">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:#EF4444;">
-                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                    <polyline points="16 17 21 12 16 7"></polyline>
-                    <line x1="21" y1="12" x2="9" y2="12"></line>
-                  </svg>
-                  Sign out
-                </div>
-              </div>
             </div>
-          </div>
+            <span class="nav-text">Manage RAG Knowledge</span>
+          </a>
+          
+          <div class="nav-section">MAIN</div>
+          <a class="nav-item active" id="nav-pipeline" onclick="switchNav('pipeline')">
+            <div class="menu-icon-box" style="background: #F87D6E;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="9" width="6" height="6" rx="1"></rect>
+                <rect x="16" y="3" width="6" height="6" rx="1"></rect>
+                <rect x="16" y="15" width="6" height="6" rx="1"></rect>
+                <path d="M8 12h4"></path>
+                <path d="M12 12v-6h4"></path>
+                <path d="M12 12v6h4"></path>
+              </svg>
+            </div>
+            <span class="nav-text">Configure Pipeline</span>
+          </a>
+          <a class="nav-item" id="nav-jobs" onclick="switchNav('jobs')">
+            <div class="menu-icon-box" style="background: #5D9CEC;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+            </div>
+            <span class="nav-text">Jobs & Execution</span>
+          </a>
         </div>
-      </header>
+      <div class="sidebar-footer">v2.1.0 (NextGen)</div>
+    </div>
+
+    <!-- Main Content Layout -->
+    <div class="main-area">
+      <div class="workspace-header" id="mainHeaderTitle">
+        Configure Pipeline
+      </div>
 
       <!-- Manage RAG Knowledge View (Production Ready) -->
       <div class="rag-view" id="view-rag">
@@ -3529,7 +3565,8 @@ Always return valid JSON inside the tags.`;
         <button class="primary-btn" onclick="saveSettings(this)">Save Configurations</button>
       </div>
     </div>
-  </div>
+    </div> <!-- closes shell-content -->
+  </div> <!-- closes shell -->
 
 </body>
 
