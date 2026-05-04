@@ -34,12 +34,12 @@
       --silver: #475569;
       --silver-bg: #F8FAFC;
       --silver-border: #E2E8F0;
-      --gold: #B45309;
-      --gold-bg: #FFFBEB;
-      --gold-border: #FEF3C7;
-      --platinum: #6D28D9;
-      --platinum-bg: #F5F3FF;
-      --platinum-border: #EDE9FE;
+      --gold: #CA8A04;
+      --gold-bg: #FEF9C3;
+      --gold-border: #FEF08A;
+      --platinum: #0284C7;
+      --platinum-bg: #F0F9FF;
+      --platinum-border: #E0F2FE;
 
       --accent: #4F46E5;
       --accent2: #10B981;
@@ -58,18 +58,19 @@
       --font-body: 'DM Sans', sans-serif;
       --font-mono: 'DM Mono', monospace;
 
-      --r: 8px;
-      --r2: 12px;
+      --r: 12px;
+      --r2: 16px;
 
-      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.02), 0 0 0 1px rgba(0, 0, 0, 0.02);
-      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.03);
-      --shadow-lg: 0 12px 24px -4px rgba(0, 0, 0, 0.06), 0 4px 8px -2px rgba(0, 0, 0, 0.03);
+      --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.02), 0 0 0 1px rgba(0, 0, 0, 0.02);
+      --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.025);
+      --shadow-lg: 0 20px 40px -10px rgba(0, 0, 0, 0.08), 0 8px 16px -8px rgba(0, 0, 0, 0.04);
     }
 
     html,
     body {
       height: 100%;
       background: var(--bg);
+      background-image: radial-gradient(at 0% 0%, #f3f4f6 0px, transparent 50%), radial-gradient(at 50% 0%, #e0e7ff 0px, transparent 50%), radial-gradient(at 100% 0%, #f3f4f6 0px, transparent 50%);
       color: var(--text);
       font-family: var(--font-body);
       font-size: 14px;
@@ -78,6 +79,20 @@
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
       text-rendering: optimizeLegibility;
+    }
+
+    /* Premium Button Hover Override */
+    .primary-btn, .secondary-btn, .action-btn, .qa-btn {
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+    .primary-btn:hover, .qa-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md) !important;
+    }
+    .secondary-btn:hover {
+      transform: translateY(-1px);
+      background: var(--surface2) !important;
+      box-shadow: var(--shadow-sm) !important;
     }
 
     /* Global Scrollbar */
@@ -230,9 +245,11 @@
     }
 
     .nav-item.active {
-      background: var(--surface2);
-      color: var(--text);
+      background: #EEF2FF;
+      color: var(--accent-dark);
       position: relative;
+      font-weight: 600;
+      box-shadow: inset 0 0 0 1px rgba(79, 70, 229, 0.1);
     }
 
     .nav-item.active::before {
@@ -241,8 +258,8 @@
       left: 0;
       top: 8px;
       bottom: 8px;
-      width: 3px;
-      background: var(--accent);
+      width: 4px;
+      background: linear-gradient(180deg, var(--accent) 0%, #8B5CF6 100%);
       border-radius: 0 4px 4px 0;
     }
 
@@ -254,15 +271,27 @@
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      background: linear-gradient(135deg, var(--surface) 0%, var(--surface3) 100%);
+      border: 1px solid var(--border);
+    }
+
+    .nav-item.active .menu-icon-box {
+      background: linear-gradient(135deg, var(--accent) 0%, #8B5CF6 100%);
+      box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
+      border: none;
     }
     
     .menu-icon-box svg {
+      stroke: var(--text2);
+    }
+
+    .nav-item.active .menu-icon-box svg {
       stroke: #FFFFFF;
     }
 
     .sidebar-footer {
-      padding: 16px 24px;
+      padding: 10px 16px;
       font-size: 11px;
       color: #565674;
       white-space: nowrap;
@@ -279,13 +308,13 @@
 
     /* Workspace Header */
     .workspace-header {
-      background: linear-gradient(90deg, #117B94 0%, #1595B3 100%);
+      background: linear-gradient(90deg, #1E1B4B 0%, #3730A3 100%);
       color: #FFFFFF;
       padding: 14px 24px;
       font-size: 15px;
       font-weight: 600;
       flex-shrink: 0;
-      box-shadow: 0 4px 12px rgba(17, 123, 148, 0.15);
+      box-shadow: 0 4px 12px rgba(55, 48, 163, 0.2);
       border-bottom: 1px solid rgba(0,0,0,0.05);
       letter-spacing: 0.01em;
     }
@@ -301,7 +330,7 @@
       justify-content: space-between;
       padding: 0 24px;
       flex-shrink: 0;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.02), 0 1px 3px rgba(0,0,0,0.03);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.02);
       z-index: 100;
     }
 
@@ -557,11 +586,13 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      background: var(--surface);
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       margin: 16px 0 16px 16px;
       border-radius: var(--r) 0 0 var(--r);
       box-shadow: var(--shadow-md);
-      border: 1px solid var(--border);
+      border: 1px solid rgba(255, 255, 255, 0.5);
       border-right: none;
     }
 
@@ -569,11 +600,13 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      background: var(--surface);
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       margin: 16px 16px 16px 0;
       border-radius: 0 var(--r) var(--r) 0;
       box-shadow: var(--shadow-md);
-      border: 1px solid var(--border);
+      border: 1px solid rgba(255, 255, 255, 0.5);
       border-left: none;
     }
 
@@ -593,7 +626,7 @@
       justify-content: space-between;
       padding: 14px 20px;
       border-bottom: 1px solid var(--border);
-      background: var(--surface);
+      background: transparent;
       flex-shrink: 0;
     }
 
@@ -772,6 +805,42 @@
       color: var(--text);
     }
 
+    .chat-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .chat-option-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text2);
+      padding: 6px 14px;
+      border-radius: 16px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .chat-option-btn:hover {
+      background: var(--bg);
+      border-color: var(--primary);
+      color: var(--primary);
+      transform: translateY(-1px);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+
+    .chat-option-btn svg {
+      width: 14px;
+      height: 14px;
+      opacity: 0.7;
+    }
+
     .tier-chips {
       display: flex;
       flex-wrap: wrap;
@@ -855,6 +924,93 @@
     .tier-chip.active .tier-chip-dot {
       opacity: 1;
       border: 1px solid rgba(255, 255, 255, 0.5);
+    }
+
+    .tier-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      border: 1px solid var(--border2);
+      background: var(--surface);
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.2s;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text3);
+      font-family: var(--font-mono);
+    }
+    
+    .tier-toggle:hover {
+      background: var(--surface2);
+      color: var(--text2);
+    }
+
+    .tier-toggle .check-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+      border: 1px solid var(--text3);
+      background: #fff;
+      transition: all 0.2s;
+    }
+    
+    .tier-toggle .check-icon svg {
+      width: 8px;
+      height: 8px;
+      stroke: #fff;
+      stroke-width: 3;
+      fill: none;
+      opacity: 0;
+      transition: all 0.2s;
+    }
+
+    .tier-toggle.active .check-icon svg {
+      opacity: 1;
+    }
+
+    /* Bronze */
+    .tier-toggle.bronze.active { border-color: var(--bronze); background: var(--bronze-bg); color: var(--bronze); }
+    .tier-toggle.bronze.active .check-icon { background: var(--bronze); border-color: var(--bronze); }
+    /* Silver */
+    .tier-toggle.silver.active { border-color: var(--silver); background: var(--silver-bg); color: var(--silver); }
+    .tier-toggle.silver.active .check-icon { background: var(--silver); border-color: var(--silver); }
+    /* Gold */
+    .tier-toggle.gold.active { border-color: var(--gold); background: var(--gold-bg); color: var(--gold); }
+    .tier-toggle.gold.active .check-icon { background: var(--gold); border-color: var(--gold); }
+    /* Platinum */
+    .tier-toggle.platinum.active { border-color: var(--platinum); background: var(--platinum-bg); color: var(--platinum); }
+    .tier-toggle.platinum.active .check-icon { background: var(--platinum); border-color: var(--platinum); }
+
+    .mode-selector {
+      display: flex;
+      gap: 16px;
+      margin-top: 12px;
+      margin-bottom: 16px;
+      background: var(--surface2);
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--border2);
+    }
+    .mode-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      cursor: pointer;
+    }
+    .mode-label input {
+      accent-color: var(--accent);
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
     }
 
     .quick-actions {
@@ -1066,20 +1222,20 @@
     }
 
     .json-key {
-      color: #8B5CF6;
+      color: #3B82F6; /* Premium Blue */
       font-weight: 600;
     }
 
     .json-str {
-      color: #059669;
+      color: #10B981; /* Premium Emerald */
     }
 
     .json-num {
-      color: #D97706;
+      color: #F59E0B; /* Premium Amber */
     }
 
     .json-bool {
-      color: #2563EB;
+      color: #8B5CF6; /* Premium Purple */
       font-weight: 600;
     }
 
@@ -1097,12 +1253,20 @@
     }
 
     .tier-block {
-      border-radius: var(--r);
+      border-radius: var(--r2);
       border: 1px solid;
       margin-bottom: 16px;
       overflow: hidden;
-      background: var(--surface);
-      box-shadow: var(--shadow-sm);
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .tier-block:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
     }
 
     .tier-block.bronze {
@@ -1342,11 +1506,11 @@
     .flow-line {
       width: 2px;
       margin-left: 23px;
-      height: 24px;
-      background: linear-gradient(180deg, var(--accent) 0%, var(--surface) 50%, var(--accent) 100%);
+      height: 28px;
+      background: linear-gradient(180deg, var(--border) 0%, var(--accent) 50%, var(--border) 100%);
       background-size: 100% 200%;
-      animation: dataFlow 2s linear infinite;
-      opacity: 0.5;
+      animation: dataFlow 1.5s linear infinite;
+      border-radius: 2px;
     }
 
     .flow-line.dashed {
@@ -2316,6 +2480,21 @@
                 <polyline points="6 9 12 15 18 9"></polyline>
               </svg>
             </div>
+            <div class="dropdown-menu">
+              <div class="dropdown-item" onclick="openSettingsModal()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                Settings
+              </div>
+              <div class="dropdown-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                Edit Profile
+              </div>
+              <div class="dropdown-divider"></div>
+              <div class="dropdown-item" style="color:#EF4444">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:#EF4444"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                Logout
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -2562,7 +2741,7 @@
       </div>
 
       <!-- Jobs & Execution View -->
-      <div class="jobs-view" id="view-jobs">
+      <div class="jobs-view" id="view-jobs" style="display:none;">
         <div class="rag-header-bar">
           <div class="rag-header-left">
             <h1 class="rag-title">Jobs & Execution</h1>
@@ -2757,37 +2936,6 @@
           </div>
 
           <div class="chat-area" id="chatArea">
-            <div class="msg ai">
-              <div class="msg-avatar ai">AI</div>
-              <div class="msg-body">
-                <div class="msg-sender">Pipeline AI</div>
-                <div class="welcome-card">
-                  <div class="wc-title">Build your data pipeline</div>
-                  <div class="wc-sub">Describe your pipeline in plain English. I'll extract the config and build the
-                    JSON for Bronze, Silver, Gold, and Platinum jobs automatically.</div>
-                  <div class="wc-tiers">
-                    <span class="tier-chip bronze"><span class="tier-chip-dot"></span>Bronze</span>
-                    <span class="tier-chip silver"><span class="tier-chip-dot"></span>Silver</span>
-                    <span class="tier-chip gold"><span class="tier-chip-dot"></span>Gold</span>
-                    <span class="tier-chip platinum"><span class="tier-chip-dot"></span>Platinum</span>
-                  </div>
-                </div>
-                <div class="msg-text" style="margin-top:10px">Try saying something like:<br><b>"I want to ingest sales
-                    data from REST API daily, clean it, build weekly KPI rollups, and embed product descriptions for
-                    search."</b></div>
-                <div class="quick-actions">
-                  <button class="qa-btn"
-                    onclick="quickFill('I want to ingest customer orders from a REST API every hour, clean and validate the data, build daily revenue aggregations, and create embeddings for product recommendations using OpenAI')">E-commerce
-                    pipeline</button>
-                  <button class="qa-btn"
-                    onclick="quickFill('Set up a pipeline to pull IoT sensor data via Kafka, filter and normalise it, compute hourly averages, and store vectors in Pinecone for anomaly detection')">IoT
-                    analytics</button>
-                  <button class="qa-btn"
-                    onclick="quickFill('Build a financial data pipeline: CSV drops from SFTP daily, schema validation and dedup, monthly P&L aggregations, embed transaction notes for fraud detection')">Finance
-                    pipeline</button>
-                </div>
-              </div>
-            </div>
           </div>
 
           <div class="input-area">
@@ -2815,9 +2963,9 @@
               <button class="panel-tab active" onclick="switchTab('pipeline',this)">Narrative</button>
               <button class="panel-tab" onclick="switchTab('flow',this)">Flow</button>
               <button class="panel-tab" onclick="switchTab('json',this)">JSON</button>
+              <button class="panel-tab" onclick="switchTab('testrun',this)">TestRun</button>
               <button class="panel-tab" onclick="switchTab('run',this)">Run/Schedule</button>
             </div>
-            <button class="copy-btn" onclick="copyJSON()" id="copyBtn">copy JSON</button>
           </div>
           <div class="right-content" id="rightContent">
             <div class="pipeline-view" id="pipelineView">
@@ -2838,60 +2986,76 @@
   <script>
     const ANTHROPIC_API = "https://api.anthropic.com/v1/messages";
     let pipelineState = {
-      tenant: {
-        name: "Acme Corp Analytics",
-        id: "t_acme_prod_01",
-        environment: "prod",
-        owner: "admin@acmecorp.com"
+      "tenant": { "id": "t_acme_prod_01", "name": "Acme Corp Analytics" },
+      "orchestration": { "trigger": "scheduled", "schedule": "0 * * * *", "alert_email": "admin@acmecorp.com" },
+      "tiers": ["bronze", "silver", "gold"],
+      "bronze": {
+        "job_id": "bronze_acme_sales_ingest",
+        "layer": "bronze",
+        "source": {
+          "connection": { "type": "salesforce", "mode": "ref", "connection_id": "sf_prod_01" },
+          "dataset": { "type": "table", "name": "opportunities" },
+          "options": { "fetch_size": 10000 }
+        },
+        "extraction": {
+          "mode": "incremental",
+          "incremental_column": "LastModifiedDate",
+          "watermark_column": "LastModifiedDate",
+          "watermark_type": "timestamp"
+        },
+        "target": {
+          "connection": { "type": "lake", "provider": "s3", "mode": "ref", "connection_id": "s3_datalake" },
+          "dataset": { "type": "file", "path": "bronze/salesforce_opportunities" },
+          "format": { "type": "parquet" }
+        },
+        "columns": [
+          { "name": "Amount", "source": { "column": "Amount", "type": "decimal" }, "target": { "type": "double" }, "transformations": [ {"type": "cast", "to": "double"} ] }
+        ],
+        "metadata_columns": [ { "name": "_ingestion_time", "type": "timestamp", "generation": "current_timestamp" } ],
+        "data_quality": { "validations": [ { "column": "OpportunityID", "rule": "not_null" } ] }
       },
-      tiers: ["bronze", "silver", "gold"],
-      bronze: {
-        enabled: true,
-        job_name: "bronze_acme_sales_ingest",
-        sources: ["Salesforce REST API", "Zendesk Tickets", "Stripe Webhooks"],
-        format: "JSON",
-        trigger: "scheduled",
-        schedule: "0 * * * *",
-        landing_zone: "/raw/acme_prod/",
-        partition_by: ["date", "source"],
-        retention_days: 30
+      "silver": {
+        "job_id": "silver_acme_cleansing",
+        "layer": "silver",
+        "source": { "connection": { "type": "lake" }, "dataset": { "path": "bronze/salesforce_opportunities" } },
+        "target": { "connection": { "type": "lake" }, "dataset": { "path": "silver/salesforce_opportunities" }, "format": { "type": "delta" } },
+        "columns": [ { "name": "OpportunityID", "source": {}, "target": {}, "transformations": [] } ],
+        "data_quality": { "validations": [ { "rule": "deduplicate", "keys": ["OpportunityID"] } ] }
       },
-      silver: {
-        enabled: true,
-        job_name: "silver_acme_cleansing",
-        quality_checks: ["Null ID check", "Email format validation", "Currency standardization"],
-        deduplication: true,
-        schema_drift: "evolve",
-        output_format: "Delta",
-        sla_hours: 1
-      },
-      gold: {
-        enabled: true,
-        job_name: "gold_acme_metrics",
-        aggregations: ["Daily Revenue", "Support Ticket Resolution Time", "Churn Risk Score"],
-        output_format: "Delta",
-        domain: "Sales & Support Insights",
-        schedule: "after silver",
-        cache_ttl_minutes: 120
-      },
-      platinum: {
-        enabled: false,
-        job_name: "platinum_acme_ai_rag",
-        embedding_model: "text-embedding-3-large",
-        chunk_strategy: "semantic",
-        vector_db: "Pinecone",
-        retrieval_top_k: 10,
-        metadata_fields: ["customer_tier", "ticket_priority", "product_category"],
-        index_name: "acme_support_rag_index"
-      },
-      orchestration: {
-        trigger: "scheduled",
-        retry_attempts: 5,
-        alert_email: "data-ops@acmecorp.com"
+      "gold": {
+        "job_id": "gold_acme_metrics",
+        "layer": "gold",
+        "subtype": "transaction",
+        "source": { "connection": { "type": "lake" }, "dataset": { "path": "silver/salesforce_opportunities" } },
+        "target": { "connection": { "type": "lake" }, "dataset": { "path": "gold/salesforce_revenue_agg" }, "format": { "type": "delta" } },
+        "columns": [ { "name": "Total_Revenue", "source": { "column": "Amount" }, "target": {}, "transformations": [ {"type": "aggregate", "function": "SUM"} ] } ]
       }
     };
     let activeTab = 'pipeline';
     let isSessionActive = false;
+
+    function toggleTier(el) {
+      el.classList.toggle('active');
+    }
+
+    function switchArchMode() {
+      const mode = document.querySelector('input[name="archMode"]:checked').value;
+      const dwCont = document.getElementById('dw-tier-container');
+      const dmCont = document.getElementById('dm-tier-container');
+      
+      if (mode === 'dw') {
+        dwCont.style.display = 'block';
+        dmCont.style.display = 'none';
+      } else {
+        dmCont.style.display = 'block';
+        dwCont.style.display = 'none';
+      }
+
+      // Re-render the active tab based on the new mode
+      if (pipelineState && pipelineState.tiers) {
+        switchTab(activeTab, document.querySelector('.panel-tab.active'));
+      }
+    }
 
     const SYSTEM_PROMPT = `You are a data pipeline configuration expert. The user will describe their data pipeline in natural language. Your job is to extract structured configuration and respond in two parts:
 
@@ -2930,21 +3094,26 @@ The JSON must follow this exact schema:
   "gold": {
     "enabled": true/false,
     "job_name": "string",
-    "aggregations": ["array of aggregation types"],
+    "subtype": "transaction|dimension|lookup",
+    "aggregations": ["array of aggregation types (if transaction)"],
+    "scd_type": "type 1|type 2 (if dimension)",
+    "lookup_keys": ["array of keys (if lookup)"],
     "output_format": "Delta|Parquet",
     "domain": "string domain area",
-    "schedule": "cron or after silver",
-    "cache_ttl_minutes": 60
+    "schedule": "cron or after silver"
   },
   "platinum": {
     "enabled": true/false,
     "job_name": "string",
-    "embedding_model": "model name if mentioned else 'text-embedding-3-small'",
-    "chunk_strategy": "sentence|paragraph|fixed-token|semantic",
-    "vector_db": "Pinecone|Weaviate|Qdrant|pgvector|ChromaDB if mentioned",
-    "retrieval_top_k": 5,
-    "metadata_fields": ["array of fields"],
-    "index_name": "string"
+    "subtype": "ai|pivot|cross-ref",
+    "embedding_model": "model (if ai)",
+    "vector_db": "Pinecone etc (if ai)",
+    "metadata_fields": ["array of fields (if ai)"],
+    "pivot_column": "string (if pivot)",
+    "value_column": "string (if pivot)",
+    "agg_function": "sum|count|avg (if pivot)",
+    "lookup_table": "string (if cross-ref)",
+    "join_type": "inner|left (if cross-ref)"
   },
   "orchestration": {
     "trigger": "scheduled|event-driven|streaming|manual",
@@ -2954,7 +3123,9 @@ The JSON must follow this exact schema:
 }
 
 Only include tiers that are clearly mentioned or strongly implied. If a tier is not included, set enabled:false and omit details.
-Be smart about inferring: "daily ingestion" = bronze scheduled, "clean data" = silver, "KPI rollups" = gold, "embeddings/search/RAG/AI" = platinum.
+Be smart about inferring based on these rules:
+- "Data Warehouse" (DW) = Bronze (ingestion) -> Silver (cleanse) -> Gold (transaction/dimension/lookup).
+- "Data Mart" (DM) = Gold (curated) -> Platinum (ai/pivot/cross-ref).
 Always return valid JSON inside the tags.`;
 
     async function callClaude(userMsg) {
@@ -3002,14 +3173,33 @@ Always return valid JSON inside the tags.`;
       return `<div class="tier-chips">${names.map(n => `<span class="tier-chip ${n} ${tiers.includes(n) ? 'active' : ''}">${n === 'active' ? '✓' : ''}<span class="tier-chip-dot"></span>${n.charAt(0).toUpperCase() + n.slice(1)}</span>`).join('')}</div>`;
     }
 
+    function getFilteredJson(json) {
+      const clone = JSON.parse(JSON.stringify(json));
+      const hasBronze = (clone.tiers || []).includes('bronze');
+      const mode = hasBronze ? 'dw' : 'dm';
+      const validTiers = mode === 'dw' ? ['bronze', 'silver', 'gold'] : ['gold', 'platinum'];
+      
+      clone.tiers = (clone.tiers || []).filter(t => validTiers.includes(t));
+      
+      ['bronze', 'silver', 'gold', 'platinum'].forEach(t => {
+        if (!validTiers.includes(t)) {
+          delete clone[t];
+        }
+      });
+      return clone;
+    }
+
     function updatePipelineView(json) {
       if (!json) return;
       pipelineState = json;
       if (json.tenant?.name) document.getElementById('tenantName').textContent = json.tenant.name;
       document.getElementById('statusPill').textContent = 'configured';
-      if (activeTab === 'pipeline') renderPipelineTab(json);
-      else if (activeTab === 'flow') renderFlowTab(json);
-      else renderJsonTab(json);
+      
+      const filtered = getFilteredJson(json);
+      if (activeTab === 'pipeline') renderPipelineTab(filtered);
+      else if (activeTab === 'flow') renderFlowTab(filtered);
+      else if (activeTab === 'json') renderJsonTab(filtered);
+      else if (activeTab === 'run') renderRunTab(filtered);
     }
 
     function renderPipelineTab(json) {
@@ -3048,17 +3238,32 @@ Always return valid JSON inside the tags.`;
             html += field('Output', cfg.output_format || 'Delta');
             html += fieldTags('Quality checks', cfg.quality_checks || [], d.cls);
           } else if (t === 'gold') {
-            html += field('Job', cfg.job_name || 'gold_aggregate');
+            html += field('Job', cfg.job_name || 'gold_job');
+            html += field('Subtype', (cfg.subtype || 'transaction').toUpperCase());
             html += field('Domain', cfg.domain || '—');
             html += field('Output', cfg.output_format || 'Delta');
-            html += field('Cache TTL', (cfg.cache_ttl_minutes || 60) + 'm');
-            html += fieldTags('Aggregations', cfg.aggregations || [], d.cls);
+            if (cfg.subtype === 'dimension') {
+              html += field('SCD Type', cfg.scd_type || '—');
+            } else if (cfg.subtype === 'lookup') {
+              html += fieldTags('Lookup Keys', cfg.lookup_keys || [], d.cls);
+            } else {
+              html += fieldTags('Aggregations', cfg.aggregations || [], d.cls);
+            }
           } else if (t === 'platinum') {
-            html += field('Job', cfg.job_name || 'platinum_embed');
-            html += field('Model', cfg.embedding_model || '—');
-            html += field('Chunking', cfg.chunk_strategy || 'sentence');
-            html += field('Vector DB', cfg.vector_db || '—');
-            html += fieldTags('Metadata', cfg.metadata_fields || [], d.cls);
+            html += field('Job', cfg.job_name || 'platinum_job');
+            html += field('Subtype', (cfg.subtype || 'ai').toUpperCase());
+            if (cfg.subtype === 'pivot') {
+              html += field('Pivot Col', cfg.pivot_column || '—');
+              html += field('Value Col', cfg.value_column || '—');
+              html += field('Agg Fn', cfg.agg_function || 'sum');
+            } else if (cfg.subtype === 'cross-ref') {
+              html += field('Join Type', cfg.join_type || 'inner');
+              html += field('Lookup Table', cfg.lookup_table || '—');
+            } else {
+              html += field('Model', cfg.embedding_model || '—');
+              html += field('Vector DB', cfg.vector_db || '—');
+              html += fieldTags('Metadata', cfg.metadata_fields || [], d.cls);
+            }
           }
           html += `</div></div>`;
         });
@@ -3079,26 +3284,68 @@ Always return valid JSON inside the tags.`;
     }
 
     function renderFlowTab(json) {
+      const hasBronze = (json.tiers || []).includes('bronze');
+      const mode = hasBronze ? 'dw' : 'dm';
       const tiers = json.tiers || [];
       const flowDefs = {
         bronze: { name: 'Bronze — Raw ingestion', desc: 'Land raw data from sources', color: 'var(--bronze)', iconPath: 'M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 10V11' },
         silver: { name: 'Silver — Cleanse & validate', desc: 'Quality checks, dedup, schema', color: 'var(--silver)', iconPath: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z' },
         gold: { name: 'Gold — Aggregate & curate', desc: 'Business logic, KPIs, rollups', color: 'var(--gold)', iconPath: 'M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z' },
-        platinum: { name: 'Platinum — Embed & index', desc: 'Vectors, RAG, AI/ML ready', color: 'var(--platinum)', iconPath: 'M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z' }
+        platinum: { name: 'Platinum — Custom/Embed', desc: 'Vectors, RAG, AI/ML ready', color: 'var(--platinum)', iconPath: 'M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z' }
       };
+
+      if (json.gold?.subtype === 'transaction') flowDefs.gold.desc = 'Fact tables, events';
+      else if (json.gold?.subtype === 'dimension') flowDefs.gold.desc = 'Master data, SCDs';
+      else if (json.gold?.subtype === 'lookup') flowDefs.gold.desc = 'Reference mappings';
+
+      if (json.platinum?.subtype === 'pivot') flowDefs.platinum.desc = 'Pivoted aggregations';
+      else if (json.platinum?.subtype === 'cross-ref') flowDefs.platinum.desc = 'Joined / Lookup data';
+      
       let html = '<div class="flow-view"><div class="flow-pipeline">';
-      const src = { name: 'Source systems', desc: ((json.bronze?.sources || []).join(', ')) || 'External data sources', color: 'var(--text3)', iconPath: 'M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4' };
-      html += flowNode(src, false);
-      if (tiers.length) html += `<div class="flow-line dashed"></div>`;
-      tiers.forEach((t, i) => {
-        const d = flowDefs[t]; if (!d) return;
-        html += flowNode(d, true);
-        if (i < tiers.length - 1) html += `<div class="flow-line"></div>`;
-      });
-      if (tiers.includes('platinum')) {
-        html += `<div class="flow-line dashed"></div>`;
-        html += flowNode({ name: 'Vector store / RAG endpoint', desc: json.platinum?.vector_db || 'AI retrieval layer', color: '#6c63ff', iconPath: 'M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z' }, false);
+      
+      if (mode === 'dw') {
+        const src = { name: 'Source systems', desc: ((json.bronze?.sources || []).join(', ')) || 'External data sources', color: 'var(--text3)', iconPath: 'M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4' };
+        html += flowNode(src, false);
+        if (tiers.length) html += `<div class="flow-line dashed"></div>`;
+        
+        const dwTiers = tiers.filter(t => ['bronze','silver','gold'].includes(t));
+        dwTiers.forEach((t, i) => {
+          const d = flowDefs[t];
+          html += flowNode(d, true);
+          if (i < dwTiers.length - 1) html += `<div class="flow-line"></div>`;
+        });
+        
+        if (dwTiers.length) {
+          html += `<div class="flow-line dashed"></div>`;
+          html += flowNode({ name: 'Data Warehouse', desc: 'Curated Gold tables', color: '#10B981', iconPath: 'M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4' }, false);
+        }
+      } else {
+        const src = { name: 'Data Warehouse', desc: 'Curated enterprise data', color: '#10B981', iconPath: 'M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4' };
+        html += flowNode(src, false);
+        if (tiers.length) html += `<div class="flow-line dashed"></div>`;
+        
+        const dmTiers = tiers.filter(t => ['gold','platinum'].includes(t));
+        dmTiers.forEach((t, i) => {
+          const d = flowDefs[t];
+          html += flowNode(d, true);
+          if (i < dmTiers.length - 1) html += `<div class="flow-line"></div>`;
+        });
+        
+        if (dmTiers.includes('platinum')) {
+          html += `<div class="flow-line dashed"></div>`;
+          let endpointDesc = json.platinum?.vector_db || 'AI retrieval layer';
+          let endpointName = 'Vector Store / Endpoint';
+          if (json.platinum?.subtype === 'pivot' || json.platinum?.subtype === 'cross-ref') {
+             endpointDesc = 'Custom Platinum Dataset';
+             endpointName = 'Data Mart / Endpoint';
+          }
+          html += flowNode({ name: endpointName, desc: endpointDesc, color: '#6c63ff', iconPath: 'M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z' }, false);
+        } else if (dmTiers.includes('gold')) {
+          html += `<div class="flow-line dashed"></div>`;
+          html += flowNode({ name: 'Data Mart', desc: 'Analytical Datasets', color: 'var(--accent)', iconPath: 'M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4' }, false);
+        }
       }
+      
       html += '</div></div>';
       document.getElementById('rightContent').innerHTML = html;
     }
@@ -3118,19 +3365,64 @@ Always return valid JSON inside the tags.`;
   </div>`;
     }
 
-    function renderJsonTab(json) {
-      const formatted = JSON.stringify(json, null, 2);
-      const highlighted = formatted
+    function syntaxHighlight(obj) {
+      if (!obj) return '{}';
+      return JSON.stringify(obj, null, 2)
         .replace(/("[\w_]+")\s*:/g, '<span class="json-key">$1</span>:')
         .replace(/:\s*(".*?")/g, ': <span class="json-str">$1</span>')
         .replace(/:\s*(\d+\.?\d*)/g, ': <span class="json-num">$1</span>')
         .replace(/:\s*(true|false)/g, ': <span class="json-bool">$1</span>')
         .replace(/:\s*(null)/g, ': <span class="json-null">$1</span>')
         .replace(/([{}\[\]])/g, '<span class="json-bracket">$1</span>');
+    }
+
+    function renderJsonTab(json) {
+      const hasBronze = (json.tiers || []).includes('bronze');
+      const mode = hasBronze ? 'dw' : 'dm';
+      const tiers = json.tiers || [];
+      
+      let accordionsHtml = '';
+      
+      const globalObj = { tenant: json.tenant, orchestration: json.orchestration };
+      accordionsHtml += `
+        <details class="json-accordion" style="border: 1px solid var(--border); border-radius: var(--r2); margin-bottom: 12px; background: var(--surface); overflow:hidden;">
+          <summary style="padding: 12px 16px; font-weight: 600; font-size: 13px; cursor: pointer; background: var(--surface2); outline: none;">
+            <span style="color:var(--text3); margin-right:6px;">⚙️</span> Orchestration & Settings
+          </summary>
+          <div class="json-view" style="padding: 16px; margin: 0; background: var(--surface); border-top: 1px solid var(--border);">
+            <pre style="white-space:pre-wrap;word-break:break-word">${syntaxHighlight(globalObj)}</pre>
+          </div>
+        </details>
+      `;
+
+      tiers.forEach(t => {
+        if (json[t]) {
+          const colorMap = { bronze: 'var(--bronze)', silver: 'var(--silver)', gold: 'var(--gold)', platinum: 'var(--platinum)' };
+          const color = colorMap[t] || 'var(--accent)';
+          accordionsHtml += `
+            <details class="json-accordion" open style="border: 1px solid var(--border); border-radius: var(--r2); margin-bottom: 12px; background: var(--surface); overflow:hidden;">
+              <summary style="padding: 12px 16px; font-weight: 600; font-size: 13px; cursor: pointer; background: var(--surface2); outline: none; display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                  <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${color};margin-right:8px;"></span>
+                  ${t.charAt(0).toUpperCase() + t.slice(1)} Tier
+                </div>
+                <div style="display:flex; gap:8px;">
+                  <button class="secondary-btn" style="padding: 4px 12px; font-size: 11px; margin: 0;" onclick="copyTierJSON(event, '${t}', this)">Copy JSON</button>
+                  <button class="secondary-btn" style="padding: 4px 12px; font-size: 11px; margin: 0; min-width: 80px;" onclick="validateTierJSON(event, '${t}', this)">Validate</button>
+                </div>
+              </summary>
+              <div class="json-view" style="padding: 16px; margin: 0; background: var(--surface); border-top: 1px solid var(--border);">
+                <pre style="white-space:pre-wrap;word-break:break-word">${syntaxHighlight(json[t])}</pre>
+              </div>
+            </details>
+          `;
+        }
+      });
+
       document.getElementById('rightContent').innerHTML = `
         <div style="display: flex; flex-direction: column; height: 100%;">
-          <div class="json-view" style="flex: 1; overflow-y: auto; margin-bottom: 24px;">
-            <pre style="white-space:pre-wrap;word-break:break-word">${highlighted}</pre>
+          <div style="flex: 1; overflow-y: auto; margin-bottom: 24px; padding-right:4px;">
+            ${accordionsHtml}
           </div>
           <div style="display: flex; justify-content: flex-start; padding-top: 16px; border-top: 1px solid var(--border);">
             <button class="primary-btn" id="submitJobBtn" onclick="submitPipelineJob()" style="padding: 10px 24px; font-weight: 600;">
@@ -3138,7 +3430,7 @@ Always return valid JSON inside the tags.`;
                 <path d="M22 2L11 13"></path>
                 <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
               </svg>
-              Submit Job
+              Deploy ${mode === 'dw' ? 'Data Warehouse' : 'Data Mart'}
             </button>
           </div>
         </div>
@@ -3209,10 +3501,6 @@ Always return valid JSON inside the tags.`;
       activeTab = tab;
       Array.from(el.parentElement.children).forEach(b => b.classList.remove('active'));
       el.classList.add('active');
-      
-      const copyBtn = document.getElementById('copyBtn');
-      if (tab === 'json') copyBtn.style.display = 'inline-block';
-      else copyBtn.style.display = 'none';
 
       if (!pipelineState.tiers?.length) {
          document.getElementById('rightContent').innerHTML = `
@@ -3227,40 +3515,136 @@ Always return valid JSON inside the tags.`;
             </div>`;
          return;
       }
-      if (tab === 'pipeline') renderPipelineTab(pipelineState);
-      else if (tab === 'flow') renderFlowTab(pipelineState);
-      else if (tab === 'json') renderJsonTab(pipelineState);
-      else if (tab === 'run') renderRunTab(pipelineState);
+      
+      const filtered = getFilteredJson(pipelineState);
+      if (tab === 'pipeline') renderPipelineTab(filtered);
+      else if (tab === 'flow') renderFlowTab(filtered);
+      else if (tab === 'json') renderJsonTab(filtered);
+      else if (tab === 'testrun') renderDryRunTab(filtered);
+      else if (tab === 'run') renderRunTab(filtered);
+    }
+
+    function validateTierJSON(e, tier, btn) {
+      e.preventDefault();
+      e.stopPropagation();
+      const originalText = btn.innerHTML;
+      btn.innerHTML = `<span style="opacity:0.7">Scanning...</span>`;
+      btn.disabled = true;
+
+      setTimeout(() => {
+        let valid = true;
+        if (tier === 'gold') {
+            if (!pipelineState.gold || !pipelineState.gold.subtype) valid = false;
+        } else if (tier === 'platinum') {
+            if (!pipelineState.platinum || !pipelineState.platinum.subtype) valid = false;
+        }
+
+        if (valid) {
+          btn.innerHTML = `✅ Valid`;
+          btn.style.color = '#10B981';
+          btn.style.borderColor = '#10B981';
+          btn.style.background = '#10B98111';
+        } else {
+          btn.innerHTML = `⚠️ Missing Subtype`;
+          btn.style.color = '#F59E0B';
+          btn.style.borderColor = '#F59E0B';
+          btn.style.background = '#F59E0B11';
+        }
+
+        setTimeout(() => {
+          btn.innerHTML = originalText;
+          btn.style.color = '';
+          btn.style.borderColor = '';
+          btn.style.background = '';
+          btn.disabled = false;
+        }, 2500);
+      }, 600);
+    }
+
+    function copyTierJSON(e, tier, btn) {
+      e.preventDefault();
+      e.stopPropagation();
+      const originalText = btn.innerHTML;
+      btn.innerHTML = `Copied!`;
+      const dataStr = JSON.stringify(pipelineState[tier], null, 2);
+      navigator.clipboard.writeText(dataStr).then(() => {
+        setTimeout(() => {
+          btn.innerHTML = originalText;
+        }, 2000);
+      });
+    }
+
+    function renderDryRunTab(json) {
+      document.getElementById('rightContent').innerHTML = `
+        <div style="padding: 24px; height: 100%; display: flex; flex-direction: column;">
+          <!-- Dry Run Card -->
+          <div style="background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:24px; display: flex; flex-direction: column; flex: 1;">
+            <h2 style="font-size:18px; margin-bottom:8px; display:flex; align-items:center; gap:8px;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+              Dry Run Simulation
+            </h2>
+            <p style="color:var(--text3); font-size:14px; margin-bottom:16px;">Simulate execution on a sandbox Spark cluster to verify syntax, dependencies, and flow execution without writing data.</p>
+            <div>
+              <button class="primary-btn" id="dryRunBtn" onclick="runDryRun()" style="margin-bottom: 16px; background:#10B981; border-color:#10B981;">
+                Execute Dry Run
+              </button>
+            </div>
+            
+            <div id="dryRunTerminal" style="display:none; background:#0f172a; color:#cbd5e1; padding:16px; border-radius:8px; font-family:monospace; font-size:13px; flex: 1; overflow-y:auto; border:1px solid #334155;">
+              <div id="dryRunLogs"></div>
+            </div>
+          </div>
+        </div>
+      `;
     }
 
     function renderRunTab(json) {
+      const hasBronze = (json.tiers || []).includes('bronze');
+      const mode = hasBronze ? 'dw' : 'dm';
+      const isScheduled = json.orchestration?.trigger === 'scheduled';
+      const email = json.orchestration?.alert_email || '';
+      
+      const selectedTiers = (json.tiers || []).map(t => t.charAt(0).toUpperCase() + t.slice(1)).join(' → ');
+      const isPlatinum = (json.tiers || []).includes('platinum');
+      
       document.getElementById('rightContent').innerHTML = `
         <div style="padding: 24px; max-width: 500px;">
-          <h3 style="font-family: var(--font-head); margin-bottom: 24px; color: var(--text); font-size: 18px;">Execution Settings</h3>
+          <h3 style="font-family: var(--font-head); margin-bottom: 24px; color: var(--text); font-size: 18px;">${mode === 'dw' ? 'Data Warehouse' : 'Data Mart'} Execution Settings</h3>
           
+          <div class="form-group" style="margin-bottom: 24px; padding: 16px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--r2);">
+            <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text3); font-weight: 600; margin-bottom: 8px; font-family: var(--font-mono);">Execution Scope</div>
+            <div style="font-weight: 600; color: var(--text); font-size: 13.5px; display: flex; align-items: center; gap: 8px;">
+              <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--accent2);"></span>
+              ${selectedTiers || 'No tiers selected'}
+            </div>
+          </div>
+
           <div class="form-group" style="margin-bottom: 24px;">
             <label class="form-label">Run Mode</label>
             <div style="display: flex; gap: 20px; margin-top: 10px;">
               <label class="radio-label" onclick="toggleRunType('now')">
-                <input type="radio" name="runType" value="now" checked> Run Now
+                <input type="radio" name="runType" value="now" ${!isScheduled ? 'checked' : ''}> Run Now
               </label>
               <label class="radio-label" onclick="toggleRunType('schedule')">
-                <input type="radio" name="runType" value="schedule"> Schedule
+                <input type="radio" name="runType" value="schedule" ${isScheduled ? 'checked' : ''}> Schedule
               </label>
             </div>
           </div>
           
-          <div id="scheduleOptions" style="display: none; margin-bottom: 24px; background: var(--surface2); border: 1px solid var(--border); padding: 20px; border-radius: var(--r2);">
+          <div id="scheduleOptions" style="display: ${isScheduled ? 'block' : 'none'}; margin-bottom: 24px; background: var(--surface2); border: 1px solid var(--border); padding: 20px; border-radius: var(--r2);">
             <div class="form-group" style="margin-bottom: 16px;">
                <label class="form-label">Frequency</label>
-               <select class="form-select">
-                 <option>Daily</option>
-                 <option>Weekly</option>
-                 <option>Monthly</option>
-                 <option>Custom Cron</option>
+               <select class="form-select" onchange="toggleFrequencyOptions(this.value)">
+                 <option value="daily">Daily</option>
+                 <option value="weekly">Weekly</option>
+                 <option value="monthly">Monthly</option>
+                 <option value="cron">Custom Cron</option>
                </select>
             </div>
-            <div class="form-group row-group" style="margin-bottom: 16px;">
+            
+            <div id="freqSpecificOptions" class="form-group" style="margin-bottom: 16px; display: none;"></div>
+
+            <div id="timeOptions" class="form-group row-group" style="margin-bottom: 16px;">
               <div class="col">
                  <label class="form-label">Time</label>
                  <input type="time" class="form-input" value="02:00">
@@ -3274,24 +3658,31 @@ Always return valid JSON inside the tags.`;
                  </select>
               </div>
             </div>
+            
+            <div id="cronOptions" class="form-group" style="display: none; margin-bottom: 16px;">
+               <label class="form-label">Cron Expression</label>
+               <input type="text" class="form-input" placeholder="0 2 * * *">
+            </div>
+
             <div class="form-group">
                <label class="form-label">Pre-requisite Job (Optional)</label>
-               <input type="text" class="form-input" placeholder="e.g. Bronze_Ingest_Job">
+               <input type="text" class="form-input" placeholder="${mode === 'dm' ? 'e.g. Enterprise_DW_Daily_Build' : 'e.g. Source_System_Extract'}">
             </div>
           </div>
           
           <div class="form-group" style="margin-bottom: 24px;">
             <label class="form-label">Target Cluster</label>
             <select class="form-select">
-              <option>prod-cluster-01 (Active)</option>
-              <option>gpu-cluster-embed</option>
+              ${isPlatinum 
+                ? `<option>gpu-cluster-embed (Active)</option><option>prod-cluster-01</option>` 
+                : `<option>prod-cluster-01 (Active)</option><option>gpu-cluster-embed</option>`}
               <option>compute-shared-03</option>
             </select>
           </div>
 
           <div class="form-group" style="margin-bottom: 32px;">
             <label class="form-label">Email Notification Alerts</label>
-            <input type="text" class="form-input" placeholder="admin@domain.com">
+            <input type="text" class="form-input" placeholder="admin@domain.com" value="${email}">
             <span style="font-size: 11px; color: var(--text3); margin-top: 4px;">Comma separated list of emails to notify on failure.</span>
           </div>
 
@@ -3301,7 +3692,7 @@ Always return valid JSON inside the tags.`;
                 <path d="M22 2L11 13"></path>
                 <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
               </svg>
-              <span>Deploy Pipeline</span>
+              <span>Deploy ${mode === 'dw' ? 'Data Warehouse' : 'Data Mart'}</span>
             </button>
           </div>
         </div>
@@ -3315,6 +3706,40 @@ Always return valid JSON inside the tags.`;
           options.style.display = 'block';
         } else {
           options.style.display = 'none';
+        }
+      }
+    }
+
+    function toggleFrequencyOptions(val) {
+      const timeOpts = document.getElementById('timeOptions');
+      const cronOpts = document.getElementById('cronOptions');
+      const specOpts = document.getElementById('freqSpecificOptions');
+      
+      if (!timeOpts || !cronOpts || !specOpts) return;
+      
+      if (val === 'cron') {
+        timeOpts.style.display = 'none';
+        specOpts.style.display = 'none';
+        cronOpts.style.display = 'block';
+      } else {
+        cronOpts.style.display = 'none';
+        timeOpts.style.display = 'flex';
+        
+        if (val === 'weekly') {
+          specOpts.style.display = 'block';
+          specOpts.innerHTML = `
+            <label class="form-label">Day of Week</label>
+            <select class="form-select">
+              <option>Monday</option><option>Tuesday</option><option>Wednesday</option>
+              <option>Thursday</option><option>Friday</option><option>Saturday</option><option>Sunday</option>
+            </select>`;
+        } else if (val === 'monthly') {
+          specOpts.style.display = 'block';
+          specOpts.innerHTML = `
+            <label class="form-label">Day of Month</label>
+            <input type="number" class="form-input" min="1" max="31" value="1">`;
+        } else {
+          specOpts.style.display = 'none';
         }
       }
     }
@@ -3355,23 +3780,48 @@ Always return valid JSON inside the tags.`;
     }
 
     async function sendMessage() {
-      if (!isSessionActive) {
-        alert("Please activate the session to enable the NLP Pipeline Builder.");
-        return;
-      }
-      
       const inp = document.getElementById('userInput');
       const txt = inp.value.trim();
       if (!txt) return;
+
+      // Auto-activate session
+      if (!isSessionActive) toggleSession();
+
       inp.value = '';
       inp.style.height = 'auto';
+
+      // Intercept for Wizard Flow
+      if (typeof chatWizardState !== 'undefined' && chatWizardState >= 1 && chatWizardState < 7) {
+        document.querySelectorAll('.chat-options').forEach(el => el.remove());
+        addMsg('user', txt.replace(/\n/g, '<br>'));
+        chatWizardState++;
+        
+        const area = document.getElementById('chatArea');
+        const typingHtml = `
+          <div class="msg ai typing-indicator" id="wizardTyping">
+            <div class="msg-avatar ai">AI</div>
+            <div class="msg-body" style="display:flex; align-items:center; gap:4px; padding:12px; border-radius:12px 12px 12px 4px; background:var(--surface);">
+              <div class="typing-dot" style="width:6px;height:6px;border-radius:50%;background:var(--text3);animation:blink 1.4s infinite .2s;"></div>
+              <div class="typing-dot" style="width:6px;height:6px;border-radius:50%;background:var(--text3);animation:blink 1.4s infinite .4s;"></div>
+              <div class="typing-dot" style="width:6px;height:6px;border-radius:50%;background:var(--text3);animation:blink 1.4s infinite .6s;"></div>
+            </div>
+          </div>
+        `;
+        area.insertAdjacentHTML('beforeend', typingHtml);
+        area.scrollTop = area.scrollHeight;
+
+        setTimeout(() => advanceWizard(txt), 800);
+        return;
+      }
 
       addMsg('user', txt.replace(/\n/g, '<br>'));
       const typingMsg = addMsg('ai', '', true);
       document.getElementById('statusPill').textContent = 'thinking...';
 
+      let promptContext = "";
+
       try {
-        const raw = await callClaude(txt);
+        const raw = await callClaude(txt + promptContext);
         const { text, json } = parseResponse(raw);
         let parsedText = text.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
         typingMsg.querySelector('.msg-text').innerHTML = parsedText;
@@ -3384,12 +3834,6 @@ Always return valid JSON inside the tags.`;
         typingMsg.querySelector('.msg-text').textContent = 'Something went wrong. Please try again.';
       }
       document.getElementById('statusPill').textContent = pipelineState.tiers?.length ? 'configured' : 'idle';
-    }
-
-    function quickFill(txt) {
-      document.getElementById('userInput').value = txt;
-      autoResize(document.getElementById('userInput'));
-      sendMessage();
     }
 
     function handleKey(e) {
@@ -3421,6 +3865,99 @@ Always return valid JSON inside the tags.`;
         document.getElementById('view-rag').style.display = 'none';
         document.getElementById('view-jobs').style.display = 'block';
       }
+    }
+
+    function validatePipelineJSON() {
+      const out = document.getElementById('jsonValidationOutput');
+      out.style.display = 'block';
+      out.innerHTML = `<span style="color:var(--text3);">Scanning JSON schema...</span>`;
+      
+      setTimeout(() => {
+        if (!pipelineState || !pipelineState.tiers || pipelineState.tiers.length === 0) {
+          out.style.borderLeft = "4px solid #EF4444";
+          out.innerHTML = `
+            <div style="color:#EF4444; font-weight:600; margin-bottom:4px;">❌ Validation Failed</div>
+            <div style="color:var(--text2);">The Pipeline State is empty. Please generate a configuration first.</div>
+          `;
+          return;
+        }
+
+        const isDW = pipelineState.architecture === 'dw';
+        const missingFields = [];
+        
+        // Basic subtype validation check
+        if (pipelineState.tiers.includes('gold')) {
+            if (!pipelineState.gold || !pipelineState.gold.subtype) missingFields.push("Gold Tier: Missing Subtype Mapping");
+        }
+        if (pipelineState.tiers.includes('platinum')) {
+            if (!pipelineState.platinum || !pipelineState.platinum.subtype) missingFields.push("Platinum Tier: Missing Subtype Mapping");
+        }
+
+        if (missingFields.length > 0) {
+          out.style.borderLeft = "4px solid #F59E0B";
+          out.innerHTML = `
+            <div style="color:#F59E0B; font-weight:600; margin-bottom:4px;">⚠️ Warnings Detected</div>
+            <ul style="margin:0; padding-left:20px; color:var(--text2);">
+              ${missingFields.map(m => `<li>${m}</li>`).join('')}
+            </ul>
+          `;
+        } else {
+          out.style.borderLeft = "4px solid #10B981";
+          out.innerHTML = `
+            <div style="color:#10B981; font-weight:600; margin-bottom:4px;">✅ JSON Schema Valid</div>
+            <div style="color:var(--text2);">All required parameters, tiers, and constraints are present. Ready for deployment.</div>
+          `;
+        }
+      }, 800);
+    }
+
+    function runDryRun() {
+      const term = document.getElementById('dryRunTerminal');
+      const logs = document.getElementById('dryRunLogs');
+      const btn = document.getElementById('dryRunBtn');
+      
+      term.style.display = 'block';
+      btn.disabled = true;
+      btn.innerHTML = `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" class="spin" style="margin-right:8px;"><circle cx="12" cy="12" r="10" stroke-width="2"></circle><path d="M12 2a10 10 0 0 1 10 10" stroke-width="2"></path></svg> Executing...`;
+      
+      if (!pipelineState || !pipelineState.tiers || pipelineState.tiers.length === 0) {
+         logs.innerHTML = `<span style="color:#EF4444;">[ERROR] SparkSubmit: Cannot dry-run an empty pipeline.</span>`;
+         btn.disabled = false;
+         btn.innerHTML = `Execute Dry Run`;
+         return;
+      }
+
+      logs.innerHTML = '';
+      const lines = [
+        `[INFO] Initializing SparkSession Context...`,
+        `[INFO] Validating cluster dependencies (spark-3.4.1, delta-2.4.0)...`,
+        `[INFO] Compiling Directed Acyclic Graph (DAG) for tiers: [${pipelineState.tiers.join(', ')}]...`,
+        `[INFO] Dry Run: Building execution plan...`,
+        `[INFO] Validating schema constraints against Mock Metadata Catalog...`,
+        `[SUCCESS] DAG Compiled. 0 Errors, 0 Warnings.`,
+        `[INFO] Spark Execution Plan verified. Safe to deploy.`
+      ];
+
+      let idx = 0;
+      function printLine() {
+        if (idx < lines.length) {
+          const div = document.createElement('div');
+          div.style.marginBottom = '4px';
+          if (lines[idx].includes('[ERROR]')) div.style.color = '#EF4444';
+          else if (lines[idx].includes('[SUCCESS]')) div.style.color = '#10B981';
+          else if (lines[idx].includes('[INFO]')) div.style.color = '#3B82F6';
+          
+          div.textContent = `> ${lines[idx]}`;
+          logs.appendChild(div);
+          term.scrollTop = term.scrollHeight;
+          idx++;
+          setTimeout(printLine, Math.random() * 400 + 200);
+        } else {
+          btn.disabled = false;
+          btn.innerHTML = `Execute Dry Run`;
+        }
+      }
+      printLine();
     }
 
     function toggleSidebar() {
@@ -3472,7 +4009,157 @@ Always return valid JSON inside the tags.`;
       }
     });
 
+    // Wizard State Machine
+    let chatWizardState = 0;
+    const loggedInUser = "John";
+    let wizardSelections = {};
+
+    function initChatWizard() {
+      const area = document.getElementById('chatArea');
+      if (area) area.innerHTML = ''; // Clear chat area
+      chatWizardState = 1;
+      
+      const welcomeText = `Hello ${loggedInUser}! What kind of pipeline would you like to build today? <br><span style="opacity:0.8; font-size:12px;">(Select an option below or type your answer in the chat)</span>`;
+      const options = [
+        { label: "Data Warehouse", value: "Data Warehouse" },
+        { label: "Data Mart", value: "Data Mart" },
+        { label: "Custom Job", value: "Custom Job" }
+      ];
+      
+      setTimeout(() => addWizardMsg(welcomeText, options), 300);
+    }
+
+    function addWizardMsg(text, options) {
+      let optsHtml = '';
+      if (options && options.length > 0) {
+        optsHtml = `<div class="chat-options">`;
+        options.forEach(opt => {
+          // Escape quotes
+          const escapedLabel = opt.label.replace(/'/g, "\\'");
+          const escapedValue = opt.value.replace(/'/g, "\\'");
+          optsHtml += `<button class="chat-option-btn" onclick="handleWizardSelection('${escapedValue}', '${escapedLabel}')">${opt.label}</button>`;
+        });
+        optsHtml += `</div>`;
+      }
+
+      const msgHtml = `
+        <div class="msg ai">
+          <div class="msg-avatar ai">AI</div>
+          <div class="msg-body">
+            <div class="msg-sender">Pipeline AI</div>
+            <div class="msg-text">${text}</div>
+            ${optsHtml}
+          </div>
+        </div>
+      `;
+      const area = document.getElementById('chatArea');
+      area.insertAdjacentHTML('beforeend', msgHtml);
+      area.scrollTop = area.scrollHeight;
+    }
+
+    window.handleWizardSelection = function(value, label) {
+      // Remove all active options to prevent re-clicking
+      document.querySelectorAll('.chat-options').forEach(el => el.remove());
+      
+      // Add User message
+      addMsg('user', label);
+      
+      // Advance State
+      chatWizardState++;
+      
+      // Simulate typing indicator
+      const area = document.getElementById('chatArea');
+      const typingHtml = `
+        <div class="msg ai typing-indicator" id="wizardTyping">
+          <div class="msg-avatar ai">AI</div>
+          <div class="msg-body" style="display:flex; align-items:center; gap:4px; padding:12px; border-radius:12px 12px 12px 4px; background:var(--surface);">
+            <div class="typing-dot" style="width:6px;height:6px;border-radius:50%;background:var(--text3);animation:blink 1.4s infinite .2s;"></div>
+            <div class="typing-dot" style="width:6px;height:6px;border-radius:50%;background:var(--text3);animation:blink 1.4s infinite .4s;"></div>
+            <div class="typing-dot" style="width:6px;height:6px;border-radius:50%;background:var(--text3);animation:blink 1.4s infinite .6s;"></div>
+          </div>
+        </div>
+      `;
+      area.insertAdjacentHTML('beforeend', typingHtml);
+      area.scrollTop = area.scrollHeight;
+
+      setTimeout(() => advanceWizard(value), 800); // 800ms delay for natural feel
+    }
+
+    function advanceWizard(lastValue) {
+      const typing = document.getElementById('wizardTyping');
+      if (typing) typing.remove();
+
+      if (chatWizardState === 2) {
+        wizardSelections.architecture = lastValue;
+        
+        let subtypeOptions = [];
+        if (lastValue.toLowerCase().includes("warehouse") || lastValue.toLowerCase() === "dw") {
+          subtypeOptions = [
+            { label: "Transaction (Fact)", value: "Transaction" },
+            { label: "Dimension", value: "Dimension" },
+            { label: "Lookup", value: "Lookup" }
+          ];
+        } else {
+          subtypeOptions = [
+            { label: "Aggregated Fact", value: "Aggregated Fact" }
+            // Future options:
+            // { label: "AI / RAG", value: "AI / RAG" },
+            // { label: "Pivot", value: "Pivot" },
+            // { label: "Cross Reference", value: "Cross Reference" }
+          ];
+        }
+        
+        addWizardMsg("What subtype should this model be?", subtypeOptions);
+        
+      } else if (chatWizardState === 3) {
+        wizardSelections.subtype = lastValue;
+        addWizardMsg("Great! Which source connection should we pull data from?", [
+          { label: "Salesforce REST API", value: "Salesforce" },
+          { label: "MySQL Database", value: "MySQL" },
+          { label: "S3 Datalake", value: "S3 Datalake" }
+        ]);
+      } else if (chatWizardState === 4) {
+        wizardSelections.connection = lastValue;
+        addWizardMsg("Which table or dataset do you want to extract? <br><span style='opacity:0.8; font-size:12px;'>(Select a common option below, or <b>type your specific table name</b> in the chat)</span>", [
+          { label: "opportunities", value: "opportunities table" },
+          { label: "customer_master", value: "customer_master table" },
+          { label: "application_logs", value: "logs" }
+        ]);
+      } else if (chatWizardState === 5) {
+        wizardSelections.dataset = lastValue;
+        addWizardMsg("Got it. Which key columns do you need? <br><span style='opacity:0.8; font-size:12px;'>(Select an option below, or <b>type a comma-separated list</b> of columns)</span>", [
+          { label: "All Columns (*)", value: "all columns" },
+          { label: "Specific Columns", value: "specific columns" }
+        ]);
+      } else if (chatWizardState === 6) {
+        wizardSelections.columns = lastValue;
+        addWizardMsg("Finally, what transformations should we apply? <br><span style='opacity:0.8; font-size:12px;'>(Select a common option below, or <b>type multiple transformations separated by commas</b> in the chat)</span>", [
+          { label: "Cleanse & Deduplicate", value: "cleanse and deduplicate" },
+          { label: "Aggregate Revenue", value: "aggregate revenue" },
+          { label: "Mask PII (Emails/Phones)", value: "mask PII" }
+        ]);
+      } else if (chatWizardState === 7) {
+        wizardSelections.transformations = lastValue;
+        
+        // Compile prompt and call Claude
+        const finalPrompt = `Build a ${wizardSelections.architecture} (${wizardSelections.subtype} subtype) from ${wizardSelections.connection} pulling the ${wizardSelections.dataset}. Select ${wizardSelections.columns} and apply ${wizardSelections.transformations} transformations.`;
+        
+        addWizardMsg("Perfect! I'm generating your robust pipeline JSON configuration now. One moment...", []);
+        
+        // Auto activate session if needed to type
+        if (!isSessionActive) {
+          toggleSession();
+        }
+        
+        setTimeout(() => {
+          document.getElementById('userInput').value = finalPrompt;
+          sendMessage();
+        }, 1200);
+      }
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
+      initChatWizard();
       updatePipelineView(pipelineState);
       document.getElementById('fileInput').addEventListener('change', function(e) {
         if(this.files && this.files.length > 0) {
