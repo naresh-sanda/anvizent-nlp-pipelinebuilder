@@ -987,6 +987,184 @@
     .tier-toggle.platinum.active { border-color: var(--platinum); background: var(--platinum-bg); color: var(--platinum); }
     .tier-toggle.platinum.active .check-icon { background: var(--platinum); border-color: var(--platinum); }
 
+    /* Horizontal Chat Flow Visualization */
+    .chat-flow-container {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      display: flex;
+      gap: 16px;
+      overflow-x: auto;
+      align-items: center;
+      height: 100%;
+      padding: 16px;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+    }
+
+    .chat-flow-container::-webkit-scrollbar {
+      height: 6px;
+    }
+
+    .chat-flow-container::-webkit-scrollbar-thumb {
+      background: var(--border2);
+      border-radius: 4px;
+    }
+
+    .vertical-flow-override .chat-flow-container {
+      flex-direction: column;
+      align-items: center;
+      overflow: visible;
+      border: none;
+      box-shadow: none;
+      background: transparent;
+      padding: 0;
+      gap: 0;
+    }
+
+    .vertical-flow-override .flow-col > div:first-child {
+      display: none;
+    }
+
+    .vertical-flow-override .flow-col {
+      width: 320px;
+    }
+
+    @keyframes flowBounce {
+      0%, 100% { transform: translateY(-2px); }
+      50% { transform: translateY(2px); }
+    }
+
+    .vertical-flow-override .flow-connector {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 24px;
+      color: var(--text3);
+    }
+
+    .vertical-flow-override .flow-connector svg {
+      display: none;
+    }
+
+    .vertical-flow-override .flow-connector::after {
+      content: '↓';
+      font-size: 16px;
+      font-weight: 300;
+      animation: flowBounce 1.5s infinite ease-in-out;
+    }
+
+    .flow-col {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .flow-col-sources {
+      min-width: 180px;
+    }
+
+    .flow-col-tier {
+      min-width: 220px;
+    }
+
+    .flow-h-node {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 20px;
+      box-shadow: var(--shadow-sm);
+      position: relative;
+    }
+
+    .flow-h-node.source {
+      border-left: 4px solid var(--border2);
+    }
+    
+    .flow-h-node.bronze { border-top: 4px solid var(--bronze); }
+    .flow-h-node.silver { border-top: 4px solid var(--silver); }
+    .flow-h-node.gold { border-top: 4px solid var(--gold); }
+    .flow-h-node.platinum { border-top: 4px solid var(--platinum); }
+
+    .fh-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+
+    .fh-tier {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--text3);
+    }
+
+    .fh-status {
+      font-size: 10px;
+      color: var(--accent2);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .fh-status::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent2);
+    }
+
+    .fh-title {
+      font-family: var(--font-head);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .fh-props {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .fh-prop {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+    }
+
+    .fh-prop-label {
+      color: var(--text3);
+    }
+
+    .fh-prop-val {
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-weight: 500;
+    }
+
+    .flow-connector {
+      display: flex;
+      align-items: center;
+      color: var(--border2);
+      min-width: 30px;
+    }
+    .flow-connector svg {
+      width: 100%;
+      height: 2px;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-dasharray: 4 4;
+    }
+    .flow-connector::after {
+      content: '▶';
+      font-size: 10px;
+      margin-left: -4px;
+    }
+
     .mode-selector {
       display: flex;
       gap: 16px;
@@ -2960,8 +3138,8 @@
         <div class="right-panel">
           <div class="right-topbar">
             <div class="panel-tabs">
-              <button class="panel-tab active" onclick="switchTab('pipeline',this)">Narrative</button>
-              <button class="panel-tab" onclick="switchTab('flow',this)">Flow</button>
+              <button class="panel-tab active" onclick="switchTab('flow',this)">Flow</button>
+              <button class="panel-tab" onclick="switchTab('pipeline',this)">Narrative</button>
               <button class="panel-tab" onclick="switchTab('json',this)">JSON</button>
               <button class="panel-tab" onclick="switchTab('testrun',this)">TestRun</button>
               <button class="panel-tab" onclick="switchTab('run',this)">Run/Schedule</button>
@@ -3031,7 +3209,7 @@
         "columns": [ { "name": "Total_Revenue", "source": { "column": "Amount" }, "target": {}, "transformations": [ {"type": "aggregate", "function": "SUM"} ] } ]
       }
     };
-    let activeTab = 'pipeline';
+    let activeTab = 'flow';
     let isSessionActive = false;
 
     function toggleTier(el) {
@@ -3075,6 +3253,7 @@ The JSON must follow this exact schema:
     "enabled": true/false,
     "job_name": "string",
     "sources": ["array of source types mentioned"],
+    "dataset": "string table or file name",
     "format": "JSON|CSV|Parquet|Avro|Delta",
     "trigger": "scheduled|event-driven|streaming|manual",
     "schedule": "cron expression",
@@ -3131,7 +3310,11 @@ Always return valid JSON inside the tags.`;
     async function callClaude(userMsg) {
       const resp = await fetch(ANTHROPIC_API, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "anthropic-version": "2023-06-01",
+          // "x-api-key": "YOUR_API_KEY_HERE" // TODO: Add key or route through secure backend proxy
+        },
         body: JSON.stringify({
           model: "claude-sonnet-4-20250514",
           max_tokens: 1000,
@@ -3173,6 +3356,111 @@ Always return valid JSON inside the tags.`;
       return `<div class="tier-chips">${names.map(n => `<span class="tier-chip ${n} ${tiers.includes(n) ? 'active' : ''}">${n === 'active' ? '✓' : ''}<span class="tier-chip-dot"></span>${n.charAt(0).toUpperCase() + n.slice(1)}</span>`).join('')}</div>`;
     }
 
+    function renderChatFlowCard(json) {
+      if (!json || !json.tiers) return '';
+      
+      const tiers = json.tiers || [];
+      const hasBronze = tiers.includes('bronze');
+      const mode = hasBronze ? 'dw' : 'dm';
+      const validTiers = mode === 'dw' ? ['bronze', 'silver', 'gold'] : ['gold', 'platinum'];
+      
+      let sourcesHtml = '';
+      if (mode === 'dw' && json.bronze && json.bronze.sources && json.bronze.sources.length > 0) {
+        sourcesHtml = json.bronze.sources.map(src => `
+          <div class="flow-h-node source">
+            <div class="fh-header">
+              <span class="fh-tier">SOURCE CONNECTION</span>
+              <span class="fh-status" style="color:var(--text3);"><span style="background:var(--text3);width:6px;height:6px;border-radius:50%;display:inline-block;margin-right:4px;"></span>ready</span>
+            </div>
+            <div class="fh-title" style="margin-bottom:6px;">${src}</div>
+            <div class="fh-props" style="margin-top:8px;">
+               <div class="fh-prop">
+                 <span class="fh-prop-label">Object/Table</span>
+                 <span class="fh-prop-val" style="max-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="${json.bronze.dataset || 'N/A'}">${json.bronze.dataset || 'N/A'}</span>
+               </div>
+               <div class="fh-prop" style="margin-top:2px;">
+                 <span class="fh-prop-label">Columns</span>
+                 <span class="fh-prop-val"><span style="color:var(--accent);cursor:pointer;font-weight:600;" onclick="window.openColumnsModal()">View/Select →</span></span>
+               </div>
+            </div>
+          </div>
+        `).join('');
+      } else {
+        sourcesHtml = `
+          <div class="flow-h-node source">
+            <div class="fh-header">
+              <span class="fh-tier">SOURCE</span>
+            </div>
+            <div class="fh-title">${mode === 'dw' ? 'External Systems' : 'Data Warehouse'}</div>
+          </div>
+        `;
+      }
+
+      let html = `<div class="chat-flow-container">`;
+      
+      // Sources Column
+      html += `<div class="flow-col flow-col-sources">
+        <div style="font-size:11px;font-weight:600;color:var(--text3);margin-bottom:4px;text-transform:uppercase;">Sources</div>
+        ${sourcesHtml}
+      </div>`;
+
+      // Render Tiers
+      validTiers.forEach(t => {
+        if (!json[t]) return;
+        const cfg = json[t];
+        
+        html += `<div class="flow-connector"><svg><line x1="0" y1="1" x2="100%" y2="1"/></svg></div>`;
+        
+        let propsHtml = '';
+        if (t === 'bronze') {
+          propsHtml += `<div class="fh-prop"><span class="fh-prop-label">Trigger</span><span class="fh-prop-val">${cfg.trigger || 'scheduled'}</span></div>`;
+          propsHtml += `<div class="fh-prop"><span class="fh-prop-label">Format</span><span class="fh-prop-val">${cfg.format || 'Parquet'}</span></div>`;
+        } else if (t === 'silver') {
+          propsHtml += `<div class="fh-prop"><span class="fh-prop-label">Dedup</span><span class="fh-prop-val">${cfg.deduplication ? 'Yes' : 'No'}</span></div>`;
+          propsHtml += `<div class="fh-prop"><span class="fh-prop-label">Output</span><span class="fh-prop-val">${cfg.output_format || 'Delta'}</span></div>`;
+        } else if (t === 'gold') {
+          propsHtml += `<div class="fh-prop"><span class="fh-prop-label">Subtype</span><span class="fh-prop-val" style="text-transform:capitalize;">${cfg.subtype || 'transaction'}</span></div>`;
+          if (cfg.subtype === 'dimension') {
+             propsHtml += `<div class="fh-prop"><span class="fh-prop-label">SCD Type</span><span class="fh-prop-val">${cfg.scd_type || '—'}</span></div>`;
+          } else if (cfg.subtype === 'lookup') {
+             propsHtml += `<div class="fh-prop"><span class="fh-prop-label">Keys</span><span class="fh-prop-val">${(cfg.lookup_keys||[]).length} keys</span></div>`;
+          } else {
+             propsHtml += `<div class="fh-prop"><span class="fh-prop-label">Aggs</span><span class="fh-prop-val">${(cfg.aggregations||[]).length} aggs</span></div>`;
+          }
+          propsHtml += `<div class="fh-prop"><span class="fh-prop-label">Output</span><span class="fh-prop-val">${cfg.output_format || 'Delta'}</span></div>`;
+        } else if (t === 'platinum') {
+          propsHtml += `<div class="fh-prop"><span class="fh-prop-label">Subtype</span><span class="fh-prop-val" style="text-transform:capitalize;">${cfg.subtype || 'ai'}</span></div>`;
+          if (cfg.subtype === 'pivot') {
+             propsHtml += `<div class="fh-prop"><span class="fh-prop-label">Pivot Col</span><span class="fh-prop-val">${cfg.pivot_column || '—'}</span></div>`;
+             propsHtml += `<div class="fh-prop"><span class="fh-prop-label">Agg Fn</span><span class="fh-prop-val" style="text-transform:uppercase;">${cfg.agg_function || 'sum'}</span></div>`;
+          } else if (cfg.subtype === 'cross-ref') {
+             propsHtml += `<div class="fh-prop"><span class="fh-prop-label">Join</span><span class="fh-prop-val" style="text-transform:capitalize;">${cfg.join_type || 'inner'}</span></div>`;
+             propsHtml += `<div class="fh-prop"><span class="fh-prop-label">Lookup</span><span class="fh-prop-val" style="max-width:80px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="${cfg.lookup_table || ''}">${cfg.lookup_table || '—'}</span></div>`;
+          } else {
+             propsHtml += `<div class="fh-prop"><span class="fh-prop-label">Vector DB</span><span class="fh-prop-val">${cfg.vector_db || 'Pinecone'}</span></div>`;
+             propsHtml += `<div class="fh-prop"><span class="fh-prop-label">Model</span><span class="fh-prop-val" style="max-width:80px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="${cfg.embedding_model || ''}">${cfg.embedding_model || '—'}</span></div>`;
+          }
+        }
+
+        html += `
+          <div class="flow-col flow-col-tier">
+            <div style="font-size:11px;font-weight:600;color:transparent;margin-bottom:4px;">.</div>
+            <div class="flow-h-node ${t}">
+              <div class="fh-header">
+                <span class="fh-tier">${t.toUpperCase()}</span>
+                <span class="fh-status">active</span>
+              </div>
+              <div class="fh-title" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="${cfg.job_name || t+'_job'}">${cfg.job_name || t+'_job'}</div>
+              <div class="fh-props">${propsHtml}</div>
+            </div>
+          </div>
+        `;
+      });
+
+      html += `</div>`;
+      return html;
+    }
+
     function getFilteredJson(json) {
       const clone = JSON.parse(JSON.stringify(json));
       const hasBronze = (clone.tiers || []).includes('bronze');
@@ -3196,6 +3484,8 @@ Always return valid JSON inside the tags.`;
       document.getElementById('statusPill').textContent = 'configured';
       
       const filtered = getFilteredJson(json);
+      
+      // Directly switch to flow tab if it's currently active or being drafted
       if (activeTab === 'pipeline') renderPipelineTab(filtered);
       else if (activeTab === 'flow') renderFlowTab(filtered);
       else if (activeTab === 'json') renderJsonTab(filtered);
@@ -3284,69 +3574,11 @@ Always return valid JSON inside the tags.`;
     }
 
     function renderFlowTab(json) {
-      const hasBronze = (json.tiers || []).includes('bronze');
-      const mode = hasBronze ? 'dw' : 'dm';
-      const tiers = json.tiers || [];
-      const flowDefs = {
-        bronze: { name: 'Bronze — Raw ingestion', desc: 'Land raw data from sources', color: 'var(--bronze)', iconPath: 'M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 10V11' },
-        silver: { name: 'Silver — Cleanse & validate', desc: 'Quality checks, dedup, schema', color: 'var(--silver)', iconPath: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z' },
-        gold: { name: 'Gold — Aggregate & curate', desc: 'Business logic, KPIs, rollups', color: 'var(--gold)', iconPath: 'M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z' },
-        platinum: { name: 'Platinum — Custom/Embed', desc: 'Vectors, RAG, AI/ML ready', color: 'var(--platinum)', iconPath: 'M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z' }
-      };
-
-      if (json.gold?.subtype === 'transaction') flowDefs.gold.desc = 'Fact tables, events';
-      else if (json.gold?.subtype === 'dimension') flowDefs.gold.desc = 'Master data, SCDs';
-      else if (json.gold?.subtype === 'lookup') flowDefs.gold.desc = 'Reference mappings';
-
-      if (json.platinum?.subtype === 'pivot') flowDefs.platinum.desc = 'Pivoted aggregations';
-      else if (json.platinum?.subtype === 'cross-ref') flowDefs.platinum.desc = 'Joined / Lookup data';
-      
-      let html = '<div class="flow-view"><div class="flow-pipeline">';
-      
-      if (mode === 'dw') {
-        const src = { name: 'Source systems', desc: ((json.bronze?.sources || []).join(', ')) || 'External data sources', color: 'var(--text3)', iconPath: 'M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4' };
-        html += flowNode(src, false);
-        if (tiers.length) html += `<div class="flow-line dashed"></div>`;
-        
-        const dwTiers = tiers.filter(t => ['bronze','silver','gold'].includes(t));
-        dwTiers.forEach((t, i) => {
-          const d = flowDefs[t];
-          html += flowNode(d, true);
-          if (i < dwTiers.length - 1) html += `<div class="flow-line"></div>`;
-        });
-        
-        if (dwTiers.length) {
-          html += `<div class="flow-line dashed"></div>`;
-          html += flowNode({ name: 'Data Warehouse', desc: 'Curated Gold tables', color: '#10B981', iconPath: 'M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4' }, false);
-        }
-      } else {
-        const src = { name: 'Data Warehouse', desc: 'Curated enterprise data', color: '#10B981', iconPath: 'M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4' };
-        html += flowNode(src, false);
-        if (tiers.length) html += `<div class="flow-line dashed"></div>`;
-        
-        const dmTiers = tiers.filter(t => ['gold','platinum'].includes(t));
-        dmTiers.forEach((t, i) => {
-          const d = flowDefs[t];
-          html += flowNode(d, true);
-          if (i < dmTiers.length - 1) html += `<div class="flow-line"></div>`;
-        });
-        
-        if (dmTiers.includes('platinum')) {
-          html += `<div class="flow-line dashed"></div>`;
-          let endpointDesc = json.platinum?.vector_db || 'AI retrieval layer';
-          let endpointName = 'Vector Store / Endpoint';
-          if (json.platinum?.subtype === 'pivot' || json.platinum?.subtype === 'cross-ref') {
-             endpointDesc = 'Custom Platinum Dataset';
-             endpointName = 'Data Mart / Endpoint';
-          }
-          html += flowNode({ name: endpointName, desc: endpointDesc, color: '#6c63ff', iconPath: 'M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z' }, false);
-        } else if (dmTiers.includes('gold')) {
-          html += `<div class="flow-line dashed"></div>`;
-          html += flowNode({ name: 'Data Mart', desc: 'Analytical Datasets', color: 'var(--accent)', iconPath: 'M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4' }, false);
-        }
+      if (!json || !json.tiers) {
+        document.getElementById('rightContent').innerHTML = '<div class="pipeline-view"><div class="empty-state"><p>No tiers configured yet</p></div></div>';
+        return;
       }
-      
-      html += '</div></div>';
+      const html = '<div class="vertical-flow-override" style="padding: 24px 32px;">' + renderChatFlowCard(json) + '</div>';
       document.getElementById('rightContent').innerHTML = html;
     }
 
@@ -4014,6 +4246,54 @@ Always return valid JSON inside the tags.`;
     const loggedInUser = "John";
     let wizardSelections = {};
 
+    function syncWizardToCanvas() {
+      const isDW = !wizardSelections.architecture || wizardSelections.architecture.toLowerCase().includes("warehouse") || wizardSelections.architecture.toLowerCase() === "dw";
+      
+      let mockJson = {
+        tiers: isDW ? ["bronze", "silver", "gold"] : ["gold", "platinum"]
+      };
+
+      if (isDW) {
+        mockJson.bronze = {
+          job_name: "ingest_" + (wizardSelections.dataset ? wizardSelections.dataset.replace(/\s+/g,'_').toLowerCase() : "data"),
+          sources: wizardSelections.connection ? [wizardSelections.connection] : ["Pending Source..."],
+          dataset: wizardSelections.dataset || "Pending Dataset...",
+          trigger: "scheduled",
+          format: "Parquet"
+        };
+        mockJson.silver = {
+          job_name: "cleanse_" + (wizardSelections.dataset ? wizardSelections.dataset.replace(/\\s+/g,'_').toLowerCase() : "data"),
+          deduplication: wizardSelections.transformations ? wizardSelections.transformations.toLowerCase().includes('dedup') : false,
+          output_format: "Delta"
+        };
+        mockJson.gold = {
+          job_name: "curated_model",
+          subtype: wizardSelections.subtype ? wizardSelections.subtype.toLowerCase() : "Pending...",
+          output_format: "Delta"
+        };
+      } else {
+        mockJson.gold = {
+          job_name: "curated_model",
+          subtype: "aggregated fact",
+          output_format: "Delta"
+        };
+        mockJson.platinum = {
+          job_name: "dm_" + (wizardSelections.dataset ? wizardSelections.dataset.replace(/\\s+/g,'_').toLowerCase() : "consumption"),
+          subtype: wizardSelections.subtype ? wizardSelections.subtype.toLowerCase() : "Pending...",
+          output_format: "Delta"
+        };
+      }
+
+      // Force switch to Flow tab if drafting, so the user sees the live updates vertically
+      if (activeTab !== 'flow') {
+         const flowTabBtn = document.querySelectorAll('.panel-tab')[0]; // Flow tab is now first
+         if (flowTabBtn) switchTab('flow', flowTabBtn);
+      }
+      
+      // Update right panel directly
+      updatePipelineView(mockJson);
+    }
+
     function initChatWizard() {
       const area = document.getElementById('chatArea');
       if (area) area.innerHTML = ''; // Clear chat area
@@ -4091,6 +4371,7 @@ Always return valid JSON inside the tags.`;
 
       if (chatWizardState === 2) {
         wizardSelections.architecture = lastValue;
+        syncWizardToCanvas();
         
         let subtypeOptions = [];
         if (lastValue.toLowerCase().includes("warehouse") || lastValue.toLowerCase() === "dw") {
@@ -4101,11 +4382,9 @@ Always return valid JSON inside the tags.`;
           ];
         } else {
           subtypeOptions = [
-            { label: "Aggregated Fact", value: "Aggregated Fact" }
-            // Future options:
-            // { label: "AI / RAG", value: "AI / RAG" },
-            // { label: "Pivot", value: "Pivot" },
-            // { label: "Cross Reference", value: "Cross Reference" }
+            { label: "AI / RAG", value: "AI / RAG" },
+            { label: "Pivot", value: "Pivot" },
+            { label: "Cross Reference", value: "Cross Reference" }
           ];
         }
         
@@ -4113,6 +4392,7 @@ Always return valid JSON inside the tags.`;
         
       } else if (chatWizardState === 3) {
         wizardSelections.subtype = lastValue;
+        syncWizardToCanvas();
         addWizardMsg("Great! Which source connection should we pull data from?", [
           { label: "Salesforce REST API", value: "Salesforce" },
           { label: "MySQL Database", value: "MySQL" },
@@ -4120,6 +4400,7 @@ Always return valid JSON inside the tags.`;
         ]);
       } else if (chatWizardState === 4) {
         wizardSelections.connection = lastValue;
+        syncWizardToCanvas();
         addWizardMsg("Which table or dataset do you want to extract? <br><span style='opacity:0.8; font-size:12px;'>(Select a common option below, or <b>type your specific table name</b> in the chat)</span>", [
           { label: "opportunities", value: "opportunities table" },
           { label: "customer_master", value: "customer_master table" },
@@ -4127,12 +4408,14 @@ Always return valid JSON inside the tags.`;
         ]);
       } else if (chatWizardState === 5) {
         wizardSelections.dataset = lastValue;
+        syncWizardToCanvas();
         addWizardMsg("Got it. Which key columns do you need? <br><span style='opacity:0.8; font-size:12px;'>(Select an option below, or <b>type a comma-separated list</b> of columns)</span>", [
           { label: "All Columns (*)", value: "all columns" },
           { label: "Specific Columns", value: "specific columns" }
         ]);
       } else if (chatWizardState === 6) {
         wizardSelections.columns = lastValue;
+        syncWizardToCanvas();
         addWizardMsg("Finally, what transformations should we apply? <br><span style='opacity:0.8; font-size:12px;'>(Select a common option below, or <b>type multiple transformations separated by commas</b> in the chat)</span>", [
           { label: "Cleanse & Deduplicate", value: "cleanse and deduplicate" },
           { label: "Aggregate Revenue", value: "aggregate revenue" },
@@ -4140,6 +4423,7 @@ Always return valid JSON inside the tags.`;
         ]);
       } else if (chatWizardState === 7) {
         wizardSelections.transformations = lastValue;
+        syncWizardToCanvas();
         
         // Compile prompt and call Claude
         const finalPrompt = `Build a ${wizardSelections.architecture} (${wizardSelections.subtype} subtype) from ${wizardSelections.connection} pulling the ${wizardSelections.dataset}. Select ${wizardSelections.columns} and apply ${wizardSelections.transformations} transformations.`;
@@ -4191,6 +4475,33 @@ Always return valid JSON inside the tags.`;
       btn.style.borderColor = '#10B981';
       setTimeout(() => {
         closeSettingsModal();
+        setTimeout(() => {
+          btn.innerHTML = originalText;
+          btn.style.background = '';
+          btn.style.borderColor = '';
+        }, 500);
+      }, 1000);
+    }
+
+    window.openColumnsModal = function() {
+      const modal = document.getElementById('columnsModal');
+      modal.style.display = 'flex';
+      setTimeout(() => modal.classList.add('open'), 10);
+    }
+    
+    window.closeColumnsModal = function() {
+      const modal = document.getElementById('columnsModal');
+      modal.classList.remove('open');
+      setTimeout(() => modal.style.display = 'none', 200);
+    }
+    
+    window.saveColumns = function(btn) {
+      const originalText = btn.innerHTML;
+      btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="16" height="16" stroke-width="2" style="margin-right:6px;vertical-align:bottom"><polyline points="20 6 9 17 4 12"></polyline></svg> Saved!`;
+      btn.style.background = '#10B981';
+      btn.style.borderColor = '#10B981';
+      setTimeout(() => {
+        window.closeColumnsModal();
         setTimeout(() => {
           btn.innerHTML = originalText;
           btn.style.background = '';
@@ -4252,7 +4563,61 @@ Always return valid JSON inside the tags.`;
         <button class="primary-btn" onclick="saveSettings(this)">Save Configurations</button>
       </div>
     </div>
-    </div> <!-- closes shell-content -->
+  </div>
+
+  <!-- Columns Modal Overlay -->
+  <div class="modal-overlay" id="columnsModal">
+    <div class="modal-content" style="max-width: 400px;">
+      <div class="modal-header">
+        <div class="modal-title">Select Columns to Ingest</div>
+        <button class="icon-btn" onclick="closeColumnsModal()" style="color: var(--text3)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="20" height="20" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <div class="modal-body" style="padding: 12px 24px;">
+        <div style="font-size: 13px; color: var(--text2); margin-bottom: 16px;">
+          Select the columns you want to extract from the source table. Unselected columns will be skipped.
+        </div>
+        
+        <div style="display:flex; flex-direction:column; gap:12px; max-height:250px; overflow-y:auto; padding-right:8px;">
+          <label style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+            <input type="checkbox" checked style="accent-color:var(--accent); width:16px; height:16px;">
+            <span style="font-size:14px; color:var(--text); font-family:var(--font-mono);">opportunity_id (PK)</span>
+          </label>
+          <label style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+            <input type="checkbox" checked style="accent-color:var(--accent); width:16px; height:16px;">
+            <span style="font-size:14px; color:var(--text); font-family:var(--font-mono);">amount</span>
+          </label>
+          <label style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+            <input type="checkbox" checked style="accent-color:var(--accent); width:16px; height:16px;">
+            <span style="font-size:14px; color:var(--text); font-family:var(--font-mono);">close_date</span>
+          </label>
+          <label style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+            <input type="checkbox" checked style="accent-color:var(--accent); width:16px; height:16px;">
+            <span style="font-size:14px; color:var(--text); font-family:var(--font-mono);">stage_name</span>
+          </label>
+          <label style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+            <input type="checkbox" checked style="accent-color:var(--accent); width:16px; height:16px;">
+            <span style="font-size:14px; color:var(--text); font-family:var(--font-mono);">account_id (FK)</span>
+          </label>
+          <label style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+            <input type="checkbox" style="accent-color:var(--accent); width:16px; height:16px;">
+            <span style="font-size:14px; color:var(--text3); font-family:var(--font-mono);">created_by</span>
+          </label>
+          <label style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+            <input type="checkbox" style="accent-color:var(--accent); width:16px; height:16px;">
+            <span style="font-size:14px; color:var(--text3); font-family:var(--font-mono);">last_modified_by</span>
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="secondary-btn" onclick="closeColumnsModal()">Cancel</button>
+        <button class="primary-btn" onclick="saveColumns(this)">Save Columns</button>
+      </div>
+    </div>
+  </div>
+
+  </div> <!-- closes shell-content -->
   </div> <!-- closes shell -->
 
 </body>
